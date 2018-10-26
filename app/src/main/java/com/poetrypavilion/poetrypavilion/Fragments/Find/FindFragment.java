@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
+import com.poetrypavilion.poetrypavilion.Fragments.Find.ChildFragment.AttentionFragment;
+import com.poetrypavilion.poetrypavilion.Fragments.Find.ChildFragment.PopularFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
@@ -53,9 +55,7 @@ public class FindFragment extends BaseFragment {
         TitleList.clear();
         TitleList.add("热门");
         TitleList.add("关注");
-        TitleList.add("最爱");
-        Fragments.add(new PoemFragment());
-        Fragments.add(new ArticalFragment());
-        Fragments.add(new VoiceFragment());
+        Fragments.add(new PopularFragment());
+        Fragments.add(new AttentionFragment());
     }
 }

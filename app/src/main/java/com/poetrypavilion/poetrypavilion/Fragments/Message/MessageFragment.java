@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
+import com.poetrypavilion.poetrypavilion.Fragments.Message.ChildFagment.NoticeFragment;
+import com.poetrypavilion.poetrypavilion.Fragments.Message.ChildFagment.PrivateLetter;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
@@ -37,7 +39,7 @@ public class MessageFragment extends BaseFragment {
 
         MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), Fragments, TitleList);
         viewpager_message_box.setAdapter(myAdapter);
-        viewpager_message_box.setOffscreenPageLimit(2);
+        viewpager_message_box.setOffscreenPageLimit(1);
 
         tab_message_box.setupWithViewPager(viewpager_message_box);
 
@@ -53,9 +55,7 @@ public class MessageFragment extends BaseFragment {
         TitleList.clear();
         TitleList.add("通知");
         TitleList.add("私信");
-        TitleList.add("@我");
-        Fragments.add(new PoemFragment());
-        Fragments.add(new ArticalFragment());
-        Fragments.add(new VoiceFragment());
+        Fragments.add(new NoticeFragment());
+        Fragments.add(new PrivateLetter());
     }
 }
