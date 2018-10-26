@@ -1,0 +1,13 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="toolbarHeight">50dp</dimen><!--qq和微博的是45dp-->
+    <dimen name="total_icon_between">25dp</dimen>
+    <dimen name="tabHight">38dp</dimen>
+    <dimen name="tabLineHigh">2dp</dimen>
+    <dimen name="tabBottomMargin">4dp</dimen>
+</resources>
