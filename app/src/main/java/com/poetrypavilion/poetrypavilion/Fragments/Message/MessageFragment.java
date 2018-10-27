@@ -18,6 +18,8 @@ import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalF
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
 
 import java.util.ArrayList;
 
@@ -57,5 +59,10 @@ public class MessageFragment extends BaseFragment {
         TitleList.add("私信");
         Fragments.add(new NoticeFragment());
         Fragments.add(new PrivateLetter());
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return BackHandlerHelper.handleBackPress(this);
     }
 }

@@ -16,11 +16,13 @@ import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalF
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
 import com.poetrypavilion.poetrypavilion.Utils.IndicatorLineUtil;
 
 import java.util.ArrayList;
 
-public class PoetryFragment extends BaseFragment {
+public class PoetryFragment extends BaseFragment{
     private ArrayList<String> TitleList = new ArrayList<>();
     private ArrayList<Fragment> Fragments = new ArrayList<>();
     private ViewPager viewpager_poetry_pavilion;
@@ -69,5 +71,10 @@ public class PoetryFragment extends BaseFragment {
         Fragments.add(new PoemFragment());
         Fragments.add(new ArticalFragment());
         Fragments.add(new VoiceFragment());
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return BackHandlerHelper.handleBackPress(this);
     }
 }

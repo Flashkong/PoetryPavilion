@@ -13,11 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.Find.FindFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.MessageFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.PoetryFragment;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
 
 import java.util.ArrayList;
 
@@ -33,15 +35,19 @@ public class MainActivity extends AppCompatActivity
     private ImageView poetry_pavilion;
     private ImageView message_box;
     private ImageView find_something;
+    private long lastBackPress;
 
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(!BackHandlerHelper.handleBackPress(this)){
+                super.onBackPressed();
+            }
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

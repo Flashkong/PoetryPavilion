@@ -29,4 +29,8 @@ dependencies {
 
     //圆形头像控件
     implementation "de.hdodenhof:circleimageview:2.1.0"
+    //诗词和文章界面的炫酷布局
+    implementation 'com.alexvasilkov:foldable-layout:1.2.1'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.alexvasilkov:android-commons:2.0.2'
 }

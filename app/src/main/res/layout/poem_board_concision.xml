@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@color/colorThemeLight"
+    android:padding="4dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/poem_board_concision_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--这里需要添加header，头像，还需要使用markdown展示-->
+        <TextView
+            android:id="@+id/poem_board_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:textColor="#000"
+            android:layout_gravity="bottom"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+</LinearLayout>

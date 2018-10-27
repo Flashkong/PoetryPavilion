@@ -18,10 +18,12 @@ import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalF
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
+import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
 
 import java.util.ArrayList;
 
-public class FindFragment extends BaseFragment {
+public class FindFragment extends BaseFragment{
 
     private ArrayList<String> TitleList = new ArrayList<>();
     private ArrayList<Fragment> Fragments = new ArrayList<>();
@@ -57,5 +59,10 @@ public class FindFragment extends BaseFragment {
         TitleList.add("关注");
         Fragments.add(new PopularFragment());
         Fragments.add(new AttentionFragment());
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        return BackHandlerHelper.handleBackPress(this);
     }
 }
