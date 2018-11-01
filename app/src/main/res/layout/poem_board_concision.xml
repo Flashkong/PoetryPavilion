@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorThemeLight"
     android:padding="4dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/poem_board_concision_linear_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <!--这里需要添加header，头像，还需要使用markdown展示-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginLeft="8dp"
+                android:id="@+id/poem_board_concision_userhead_img"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_marginStart="8dp"
+                app:civ_border_width="1dp"
+                app:civ_border_color="@color/white"/>
+
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/poem_board_concision_userhead_img"
+                android:id="@+id/poem_board_concision_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/poem_board_concision_userhead_img"
+                android:layout_marginStart="10dp" />
+
+            <TextView
+                android:layout_marginRight="10dp"
+                android:id="@+id/poem_board_concision_user_uplode_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/poem_board_concision_userhead_img"
+                android:layout_below="@id/poem_board_concision_username"
+                android:layout_toEndOf="@id/poem_board_concision_userhead_img"
+                android:layout_marginEnd="10dp" />
+
+        </RelativeLayout>
+
         <TextView
-            android:id="@+id/poem_board_user_name"
+            android:id="@+id/poem_board_poem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"

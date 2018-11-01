@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alexvasilkov.android.commons.ui.Views;
 import com.alexvasilkov.foldablelayout.UnfoldableView;
@@ -17,6 +18,7 @@ import com.poetrypavilion.poetrypavilion.Items.Painting;
 import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
+import com.zzhoujay.richtext.RichText;
 
 public class PoemFragment extends BaseFragment{
 
@@ -50,13 +52,11 @@ public class PoemFragment extends BaseFragment{
             @Override
             public void onUnfolded(UnfoldableView unfoldableView) {
                 //这个在打开完成具体的页面之后调用
-                int i=0;
             }
 
             @Override
             public void onFoldingBack(UnfoldableView unfoldableView) {
                 //这个在开始关闭的时候调用
-                int i=0;
             }
 
             @Override
@@ -78,7 +78,6 @@ public class PoemFragment extends BaseFragment{
 
     public void openDetails(View coverView, Painting painting) {
         final TextView title = Views.find(poem_board_detail_layout, R.id.details_title);
-
         title.setText(painting.getTitle());
         poem_detail_unfoldableview.unfold(coverView, poem_board_detail_layout);
         /*
