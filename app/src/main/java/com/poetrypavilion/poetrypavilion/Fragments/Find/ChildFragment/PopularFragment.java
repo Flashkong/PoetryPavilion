@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.PoetryFragmentBinding;
 
-public class PopularFragment extends BaseFragment {
-    private View PopularView;
+public class PopularFragment extends BaseFragment<PoetryFragmentBinding> {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        PopularView = inflater.inflate(R.layout.popular_fragment, container, false);
+    public int setViewXml() {
+        return R.layout.popular_fragment;
+    }
 
-        return PopularView;
+    @Override
+    public void OtherProcess() {
+
     }
 }

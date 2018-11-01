@@ -1,4 +1,4 @@
-package com.poetrypavilion.poetrypavilion;
+package com.poetrypavilion.poetrypavilion.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,14 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.Find.FindFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.MessageFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.PoetryFragment;
+import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity

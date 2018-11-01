@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.AttentionFragmentBinding;
 
-public class AttentionFragment extends BaseFragment {
-    private View AttentionView;
+public class AttentionFragment extends BaseFragment<AttentionFragmentBinding> {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        AttentionView = inflater.inflate(R.layout.attention_fragment, container, false);
+    public int setViewXml() {
+        return R.layout.attention_fragment;
+    }
 
-        return AttentionView;
+    @Override
+    public void OtherProcess() {
+
     }
 }

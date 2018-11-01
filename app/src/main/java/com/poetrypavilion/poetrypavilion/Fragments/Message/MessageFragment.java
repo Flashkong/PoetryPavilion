@@ -20,37 +20,34 @@ import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFra
 import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
+import com.poetrypavilion.poetrypavilion.databinding.MessageFragmentBinding;
 
 import java.util.ArrayList;
 
-public class MessageFragment extends BaseFragment {
+public class MessageFragment extends BaseFragment<MessageFragmentBinding> {
 
     private ArrayList<String> TitleList = new ArrayList<>();
     private ArrayList<Fragment> Fragments = new ArrayList<>();
-    private ViewPager viewpager_message_box;
-    private View MessageBoxView;
-    private TabLayout tab_message_box;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        MessageBoxView = inflater.inflate(R.layout.message_fragment,container,false);
-
-        initFragmentList();
-        initIDs();
-
-        MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), Fragments, TitleList);
-        viewpager_message_box.setAdapter(myAdapter);
-        viewpager_message_box.setOffscreenPageLimit(1);
-
-        tab_message_box.setupWithViewPager(viewpager_message_box);
-
-        return MessageBoxView;
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
-    private void initIDs() {
-        viewpager_message_box = MessageBoxView.findViewById(R.id.viewpager_message_box);
-        tab_message_box = MessageBoxView.findViewById(R.id.tab_message_box);
+    @Override
+    public int setViewXml() {
+        return R.layout.message_fragment;
+    }
+
+    @Override
+    public void OtherProcess() {
+        initFragmentList();
+
+        MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), Fragments, TitleList);
+        bindingView.viewpagerMessageBox.setAdapter(myAdapter);
+        bindingView.viewpagerMessageBox.setOffscreenPageLimit(1);
+
+        bindingView.tabMessageBox.setupWithViewPager(bindingView.viewpagerMessageBox);
     }
 
     private void initFragmentList() {

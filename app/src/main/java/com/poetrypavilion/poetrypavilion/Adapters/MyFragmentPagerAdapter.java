@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
+/**
+ * @message 配合tablayout实现每个小页面的PageAdapter
+ */
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
     private List<?> FragmentList;
     private List<?> TitleList;

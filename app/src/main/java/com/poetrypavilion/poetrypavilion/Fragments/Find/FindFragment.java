@@ -20,37 +20,38 @@ import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFra
 import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
+import com.poetrypavilion.poetrypavilion.databinding.FindFragmentBinding;
 
 import java.util.ArrayList;
 
-public class FindFragment extends BaseFragment{
+public class FindFragment extends BaseFragment<FindFragmentBinding> {
 
     private ArrayList<String> TitleList = new ArrayList<>();
     private ArrayList<Fragment> Fragments = new ArrayList<>();
-    private ViewPager viewpager_find_something;
-    private View FindSomethingView;
-    private TabLayout tab_find_something;
 
+    /**
+     * @param savedInstanceState
+     * @message 在主活动创建的时候调用这个函数，在这里需要设置ViewModel
+     */
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        FindSomethingView = inflater.inflate(R.layout.find_fragment,container,false);
-
-        initFragmentList();
-        initIDs();
-
-        MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), Fragments, TitleList);
-        viewpager_find_something.setAdapter(myAdapter);
-        viewpager_find_something.setOffscreenPageLimit(2);
-
-        tab_find_something.setupWithViewPager(viewpager_find_something);
-
-        return FindSomethingView;
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
-    private void initIDs() {
-        viewpager_find_something = FindSomethingView.findViewById(R.id.viewpager_find_something);
-        tab_find_something = FindSomethingView.findViewById(R.id.tab_find_something);
+    @Override
+    public int setViewXml() {
+        return R.layout.find_fragment;
+    }
+
+    @Override
+    public void OtherProcess() {
+        initFragmentList();
+
+        MyFragmentPagerAdapter myAdapter = new MyFragmentPagerAdapter(getChildFragmentManager(), Fragments, TitleList);
+        bindingView.viewpagerFindSomething.setAdapter(myAdapter);
+        bindingView.viewpagerFindSomething.setOffscreenPageLimit(2);
+
+        bindingView.tabFindSomething.setupWithViewPager(bindingView.viewpagerFindSomething);
     }
 
     private void initFragmentList() {

@@ -9,14 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.VoiceFragmentBinding;
 
-public class VoiceFragment extends BaseFragment {
-    private View VoiceView;
+public class VoiceFragment extends BaseFragment<VoiceFragmentBinding> {
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        VoiceView = inflater.inflate(R.layout.voice_fragment,container,false);
+    public int setViewXml() {
+        return R.layout.voice_fragment;
+    }
 
-        return VoiceView;
+    @Override
+    public void OtherProcess() {
+
     }
 }

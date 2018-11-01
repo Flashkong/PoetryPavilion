@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.ArticalFragmentBinding;
 
-public class ArticalFragment extends BaseFragment {
+public class ArticalFragment extends BaseFragment<ArticalFragmentBinding> {
 
-    private View ArticalView;
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        ArticalView = inflater.inflate(R.layout.artical_fragment,container,false);
+    public int setViewXml() {
+        return R.layout.artical_fragment;
+    }
 
-        return ArticalView;
+    @Override
+    public void OtherProcess() {
+
     }
 }

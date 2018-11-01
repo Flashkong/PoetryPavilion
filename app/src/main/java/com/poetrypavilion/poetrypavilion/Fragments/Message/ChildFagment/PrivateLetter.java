@@ -9,15 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.PrivatelettersFragmentBinding;
 
-public class PrivateLetter extends BaseFragment {
-    private View PrivateLetterView;
+public class PrivateLetter extends BaseFragment<PrivatelettersFragmentBinding> {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        PrivateLetterView = inflater.inflate(R.layout.privateletters_fragment, container, false);
+    public int setViewXml() {
+        return R.layout.privateletters_fragment;
+    }
 
-        return PrivateLetterView;
+    @Override
+    public void OtherProcess() {
+
     }
 }

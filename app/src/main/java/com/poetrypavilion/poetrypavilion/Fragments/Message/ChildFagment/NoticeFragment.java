@@ -9,16 +9,17 @@ import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.databinding.NoticeFragmentBinding;
 
-public class NoticeFragment extends BaseFragment {
-
-    private View NoticeView;
+public class NoticeFragment extends BaseFragment<NoticeFragmentBinding> {
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        NoticeView = inflater.inflate(R.layout.notice_fragment, container, false);
+    public int setViewXml() {
+        return R.layout.notice_fragment;
+    }
 
-        return NoticeView;
+    @Override
+    public void OtherProcess() {
+
     }
 }
