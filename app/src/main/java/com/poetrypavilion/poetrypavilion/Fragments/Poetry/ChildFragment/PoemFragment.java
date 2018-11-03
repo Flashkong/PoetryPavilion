@@ -1,14 +1,8 @@
 package com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alexvasilkov.android.commons.ui.Views;
 import com.alexvasilkov.foldablelayout.UnfoldableView;
@@ -16,37 +10,28 @@ import com.poetrypavilion.poetrypavilion.Adapters.PaintingsAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.Items.Painting;
 import com.poetrypavilion.poetrypavilion.R;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
-import com.zzhoujay.richtext.RichText;
+import com.poetrypavilion.poetrypavilion.databinding.PoemFragmentBinding;
 
-public class PoemFragment extends BaseFragment{
-
-    private View poem_board_detail_layout;
-    private UnfoldableView poem_detail_unfoldableview;
-    private View PoemView;
+public class PoemFragment extends BaseFragment<PoemFragmentBinding>{
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState){
-        PoemView = inflater.inflate(R.layout.poem_fragment,container,false);
+    public int setViewXml() {
+        return R.layout.poem_fragment;
+    }
 
-
-        final ListView listView = Views.find(PoemView, R.id.poem_boards_list_view);
+    @Override
+    public void OtherProcess() {
+        final ListView listView = bindingView.poemInclude.poemBoardsListView;
         PaintingsAdapter adapter = new PaintingsAdapter(this);
         listView.setAdapter(adapter);
 
+        bindingView.poemInclude.poemBoardDetailLayout.setVisibility(View.INVISIBLE);
 
-        poem_board_detail_layout = Views.find(PoemView, R.id.poem_board_detail_layout);
-        poem_board_detail_layout.setVisibility(View.INVISIBLE);
-
-        poem_detail_unfoldableview = Views.find(PoemView, R.id.poem_detail_unfoldableview);
-
-        poem_detail_unfoldableview.setOnFoldingListener(new UnfoldableView.SimpleFoldingListener() {
+        bindingView.poemInclude.poemDetailUnfoldableview.setOnFoldingListener(new UnfoldableView.SimpleFoldingListener() {
             @Override
             public void onUnfolding(UnfoldableView unfoldableView) {
                 //这一句在点击listview里面的具体部件的时候首先执行
-                poem_board_detail_layout.setVisibility(View.VISIBLE);
+                bindingView.poemInclude.poemBoardDetailLayout.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -62,7 +47,7 @@ public class PoemFragment extends BaseFragment{
             @Override
             public void onFoldedBack(UnfoldableView unfoldableView) {
                 //这个在关闭即将结束的时候调用
-                poem_board_detail_layout.setVisibility(View.INVISIBLE);
+                bindingView.poemInclude.poemBoardDetailLayout.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -72,14 +57,13 @@ public class PoemFragment extends BaseFragment{
                 openDetails(view,item);
             }
         });
-        return PoemView;
     }
 
 
     public void openDetails(View coverView, Painting painting) {
-        final TextView title = Views.find(poem_board_detail_layout, R.id.details_title);
+        final TextView title = Views.find(bindingView.poemInclude.poemBoardDetailLayout, R.id.details_title);
         title.setText(painting.getTitle());
-        poem_detail_unfoldableview.unfold(coverView, poem_board_detail_layout);
+        bindingView.poemInclude.poemDetailUnfoldableview.unfold(coverView, bindingView.poemInclude.poemBoardDetailLayout);
         /*
         这里当时是设置具体的图片内容的地方，里面包含了描述的格式
         SpannableBuilder builder = new SpannableBuilder(PoemView.getContext());
@@ -96,9 +80,10 @@ public class PoemFragment extends BaseFragment{
 
     @Override
     public boolean onBackPressed() {
-        if (poem_detail_unfoldableview != null
-                && (poem_detail_unfoldableview.isUnfolded() || poem_detail_unfoldableview.isUnfolding())) {
-            poem_detail_unfoldableview.foldBack();
+        if (bindingView.poemInclude.poemDetailUnfoldableview != null
+                && (bindingView.poemInclude.poemDetailUnfoldableview.isUnfolded()
+                || bindingView.poemInclude.poemDetailUnfoldableview.isUnfolding())) {
+            bindingView.poemInclude.poemDetailUnfoldableview.foldBack();
             return true;
         }else {
             return false;

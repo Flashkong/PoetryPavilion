@@ -8,9 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-
-import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
 
 public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment implements FragmentBackHandler {
