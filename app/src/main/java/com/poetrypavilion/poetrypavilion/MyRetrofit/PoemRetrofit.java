@@ -44,14 +44,15 @@ public class PoemRetrofit extends BaseRetrofit{
             public void onResponse(@NonNull Call<List<HttpGetPoemBean>> call,
                                    @NonNull Response<List<HttpGetPoemBean>> response) {
                 //设置监听器返回结果
-                mResponseListener.onReponseBack(response.body());
+                //这里回调之后居然回到了主线程，很奇怪，为了避免在主线性处理数据，需要在这里再开一个线程
+                new Thread(()->mResponseListener.onReponseBack(response.body())).start();
             }
 
             //请求失败时回调
             @Override
             public void onFailure(@NonNull Call<List<HttpGetPoemBean>> call,
                                   @NonNull Throwable throwable) {
-                mResponseListener.onReponseBack(null);
+                new Thread(()->mResponseListener.onReponseBack(null)).start();
             }
         });
     }

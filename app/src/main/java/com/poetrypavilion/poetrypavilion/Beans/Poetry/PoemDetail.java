@@ -1,6 +1,8 @@
 package com.poetrypavilion.poetrypavilion.Beans.Poetry;
 
-public class PoemDetail {
+import java.io.Serializable;
+
+public class PoemDetail implements Serializable {
     //用户的头像
     private String UserImgSrc;
     //诗歌的题目
@@ -13,6 +15,12 @@ public class PoemDetail {
     private String Poetry;
     //诗歌的译文
     private String Translate;
+    //诗歌的赏析
+    private String shangxi;
+    //诗歌的创作时间（朝代）
+    private String Dynasty;
+    //诗歌的喜欢总数
+    private int LikeTotal;
 
     public String getUserImgSrc() {
         return UserImgSrc;
@@ -21,13 +29,6 @@ public class PoemDetail {
     public void setUserImgSrc(String userImgSrc) {
         UserImgSrc = userImgSrc;
     }
-
-    //诗歌的赏析
-    private String shangxi;
-    //诗歌的创作时间（朝代）
-    private String Dynasty;
-    //诗歌的喜欢总数
-    private int LikeTotal;
 
     public String getTitle() {
         return Title;
