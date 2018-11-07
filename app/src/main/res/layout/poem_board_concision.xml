@@ -2,33 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorThemeLight"
+    android:background="@color/white"
     android:padding="4dp"
     android:orientation="vertical">
 
     <LinearLayout
+        android:padding="8dp"
         android:id="@+id/poem_board_concision_linear_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_marginLeft="8dp"
                 android:id="@+id/poem_board_concision_userhead_img"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:src="@mipmap/ic_launcher"
-                android:layout_marginStart="8dp"
                 app:civ_border_width="1dp"
+                android:layout_centerVertical="true"
                 app:civ_border_color="@color/white"/>
 
             <TextView
+                android:textSize="16sp"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/poem_board_concision_userhead_img"
                 android:id="@+id/poem_board_concision_username"
@@ -38,25 +39,33 @@
                 android:layout_marginStart="10dp" />
 
             <TextView
-                android:layout_marginRight="10dp"
+                android:textSize="14sp"
+                android:layout_marginLeft="10dp"
                 android:id="@+id/poem_board_concision_user_uplode_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/poem_board_concision_userhead_img"
                 android:layout_below="@id/poem_board_concision_username"
                 android:layout_toEndOf="@id/poem_board_concision_userhead_img"
-                android:layout_marginEnd="10dp" />
+                android:layout_marginStart="10dp" />
 
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/poem_board_poem"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:id="@+id/poem_board_concision_poem_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp"
+            android:layout_height="wrap_content"
             android:textColor="#000"
-            android:layout_gravity="bottom"
-            android:textSize="16sp" />
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/poem_board_concision_poem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textSize="15sp" />
     </LinearLayout>
 
 

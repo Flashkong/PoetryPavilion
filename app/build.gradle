@@ -17,7 +17,11 @@ android {
         }
     }
     dataBinding {
-        enabled = true;
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 }
 
@@ -40,4 +44,20 @@ dependencies {
     //富文本的插件
     implementation 'com.zzhoujay.richtext:richtext:3.0.7'
     implementation 'com.zzhoujay:html:1.0.2'
+
+    //lifecycle
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
+    implementation 'com.google.zxing:core:3.3.0'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+
+    //Gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //rxjava
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.4.0'
+
+    //下拉刷新插件
+    implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
 }

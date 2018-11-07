@@ -1,60 +1,132 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-        <ListView
-            android:id="@+id/poem_boards_list_view"
+        <jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:cacheColorHint="@android:color/transparent"
-            android:clipToPadding="false"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="12dp"
-            android:fadeScrollbars="true"
-            android:listSelector="@android:color/transparent"
-            android:padding="12dp"
-            android:scrollbarStyle="outsideOverlay"
-            android:scrollingCache="false" />
+            android:id="@+id/poem_board_refresh">
+
+            <ListView
+                android:id="@+id/poem_boards_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@android:color/transparent"
+                android:clipToPadding="false"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="12dp"
+                android:fadeScrollbars="true"
+                android:listSelector="@android:color/transparent"
+                android:padding="12dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollingCache="false" />
+        </jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout>
 
 
-        <!--这里是点开之后详情页面的具体布局-->
-        <LinearLayout
+
+        <!--这里是点开之后详情页面的具体布局,这里的高度必须是match_parent,否则展示不正常-->
+        <!--必须要设置背景，否则背景默认是透明的-->
+        <ScrollView
             android:id="@+id/poem_board_detail_layout"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#FFF"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
+            <LinearLayout
 
-            <TextView
-                android:id="@+id/details_title"
+                android:orientation="vertical"
+                android:padding="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="12dp"
-                android:textColor="#000"
-                android:textSize="18sp" />
+                android:background="#FFF">
 
-            <!--<TextView-->
-            <!--android:id="@+id/details_text"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginBottom="@dimen/default_margin"-->
-            <!--android:layout_marginLeft="@dimen/default_margin"-->
-            <!--android:layout_marginRight="@dimen/default_margin"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:lineSpacingExtra="4sp"-->
-            <!--android:textColor="#eee"-->
-            <!--android:textSize="14sp" />-->
+                <!--头像，用户名和时间-->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </LinearLayout>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/poem_board_detail_userhead_img"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:src="@mipmap/ic_launcher"
+                        app:civ_border_width="1dp"
+                        android:layout_centerVertical="true"
+                        app:civ_border_color="@color/white"/>
+
+                    <TextView
+                        android:textSize="16sp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/poem_board_detail_userhead_img"
+                        android:id="@+id/poem_board_detail_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/poem_board_detail_userhead_img"
+                        android:layout_marginStart="10dp" />
+
+                    <TextView
+                        android:textSize="14sp"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/poem_board_detail_user_uplode_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/poem_board_detail_userhead_img"
+                        android:layout_below="@id/poem_board_detail_username"
+                        android:layout_toEndOf="@id/poem_board_detail_userhead_img"
+                        android:layout_marginStart="10dp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/details_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#000"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/details_poem_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/details_poem_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/details_poem_translate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/details_poem_shangxi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </ScrollView>
 
         <com.alexvasilkov.foldablelayout.UnfoldableView
             android:id="@+id/poem_detail_unfoldableview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </RelativeLayout>
 </layout>

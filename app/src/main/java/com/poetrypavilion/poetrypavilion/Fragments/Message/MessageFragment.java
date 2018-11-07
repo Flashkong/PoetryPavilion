@@ -1,25 +1,15 @@
 package com.poetrypavilion.poetrypavilion.Fragments.Message;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.ChildFagment.NoticeFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.ChildFagment.PrivateLetter;
-import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.ArticalFragment;
-import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.PoemFragment;
-import com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment.VoiceFragment;
 import com.poetrypavilion.poetrypavilion.R;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
+import com.poetrypavilion.poetrypavilion.Utils.BackHandle.BackHandlerHelper;
 import com.poetrypavilion.poetrypavilion.databinding.MessageFragmentBinding;
 
 import java.util.ArrayList;

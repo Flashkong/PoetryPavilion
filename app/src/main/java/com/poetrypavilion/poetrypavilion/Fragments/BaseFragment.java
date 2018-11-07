@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.FragmentBackHandler;
+import com.poetrypavilion.poetrypavilion.Utils.BackHandle.FragmentBackHandler;
 
 public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment implements FragmentBackHandler {
     protected T bindingView;
@@ -36,4 +36,10 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment i
     */
     public abstract void OtherProcess();
 
+    /**
+     * @message 有些Fragment并不需要loadData方法，如果没有的话就不重写这个方法
+     */
+    protected void loadData() {}
+
+    protected void refreshData(){}
 }

@@ -1,5 +1,7 @@
 package com.poetrypavilion.poetrypavilion.activities;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -18,8 +20,11 @@ import com.poetrypavilion.poetrypavilion.Fragments.Find.FindFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.MessageFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.PoetryFragment;
 import com.poetrypavilion.poetrypavilion.R;
-import com.poetrypavilion.poetrypavilion.Utils.BackHande.BackHandlerHelper;
+import com.poetrypavilion.poetrypavilion.Utils.BackHandle.BackHandlerHelper;
+import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,ViewPager.OnPageChangeListener {
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView poetry_pavilion;
     private ImageView message_box;
     private ImageView find_something;
+    private ImageView add_something;
     private long lastBackPress;
 
     @Override
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity
         poetry_pavilion = (ImageView)findViewById(R.id.poetry_pavilion);
         message_box = (ImageView)findViewById(R.id.message_box);
         find_something = (ImageView)findViewById(R.id.find_something);
+        add_something = (ImageView)findViewById(R.id.add_something);
     }
     private void setViewPagerContent(){
         ArrayList<Fragment> FragmentList = new ArrayList<>();
@@ -94,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         poetry_pavilion.setOnClickListener(this);
         message_box.setOnClickListener(this);
         find_something.setOnClickListener(this);
+        add_something.setOnClickListener(this);
     }
 
     //左侧抽屉的select的选择方法
@@ -143,6 +151,8 @@ public class MainActivity extends AppCompatActivity
                 if(total_content.getCurrentItem()!=2){
                     this.setCurrentItem(2);
                 }
+                break;
+            case R.id.add_something:
                 break;
             default:
                     break;
