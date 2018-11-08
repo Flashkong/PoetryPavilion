@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alexvasilkov.foldablelayout.UnfoldableView;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.poetrypavilion.poetrypavilion.Acache.ACache;
 import com.poetrypavilion.poetrypavilion.Adapters.PaintingsAdapter;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
@@ -71,8 +72,14 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
         bindingView.poemInclude.poemBoardRefresh.setWaveColor(Color.argb(230,34,153,84));
         bindingView.poemInclude.poemBoardRefresh.setColorSchemeColors(Color.WHITE, Color.WHITE);
 
-        //从缓存加载数据
-        loadData();
+        //设置加载失败页面的点击事件
+        bindingView.poemLoadError.setOnClickListener(v -> {
+            //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
+            bindingView.poemLoadError.setVisibility(View.GONE);
+            bindingView.poemLoad.setVisibility(View.VISIBLE);
+            refresh_time--;
+            refreshData();
+        });
     }
 
     public void openDetails(View coverView, PoemDetail item) {
@@ -129,27 +136,36 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                         poemViewModel.setOnLoadFromAcacheListener(new PoemViewModel.LoadFromAcacheListener() {
                             @Override
                             public void onLoadOk(List<PoemDetail> poemDetails) {
-                                // TODO 这里还要写处理底部UI动画的命令
                                 Objects.requireNonNull(getActivity()).runOnUiThread(
-                                        ()->poemViewModel.getPoemDetails().setValue(poemDetails)
+                                        ()->{
+                                            poemViewModel.getPoemDetails().setValue(poemDetails);
+                                            bindingView.poemLoad.setVisibility(View.GONE);
+                                        }
                                 );
                             }
                             @Override
                             public void onLoadFailure() {
-                                // TODO 这里还要写处理底部UI动画的命令
                                 Objects.requireNonNull(getActivity()).runOnUiThread(
-                                        () -> Toast.makeText(getContext(),
-                                                "没有缓存数据，请下拉刷新！",Toast.LENGTH_LONG).show());
+                                        () ->{
+                                            Toast.makeText(getContext(),
+                                                    "没有找到缓存数据，即将自动刷新！",Toast.LENGTH_LONG).show();
+                                            //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
+                                            refresh_time--;
+                                            refreshData();
+                                        });
                             }
-                            //TODO 这里写一个加载缓存失败之后自动刷新
                         });
                         poemViewModel.getPoemsFromRepository(0,PoemViewModel.TYPE.FIRSTLOAD,aCache);
                     }catch(Exception e){
                         //出错处理
                         Objects.requireNonNull(getActivity()).runOnUiThread(
-                                () -> Toast.makeText(getContext(),
-                                        "加载缓存数据时出错！",Toast.LENGTH_LONG).show());
-                        //TODO 这里写一个加载缓存失败之后自动刷新
+                                () ->{
+                                    Toast.makeText(getContext(),
+                                            "加载缓存数据时出错，即将自动刷新！",Toast.LENGTH_LONG).show();
+                                    //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
+                                    refresh_time--;
+                                    refreshData();
+                                });
                     }
                 }
         ).start();
@@ -174,17 +190,20 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                         }else {
                             delay_time=400;
                         }
-                        Objects.requireNonNull(getActivity()).runOnUiThread(()->
-                                new Handler().postDelayed(() -> {
-                                    bindingView.poemInclude.poemBoardRefresh.setRefreshing(false);
-                                    if(!IsOldPoemListNull){
-                                        //如果刷新前就有数据
-                                        poemViewModel.getPoemDetails().setValue(poemViewModel.getPoemDetails().getValue());
-                                    }else {
-                                        //如果刷新之前无数据
-                                        poemViewModel.getPoemDetails().setValue(list);
-                                    }
-                                }, delay_time)
+                        Objects.requireNonNull(getActivity()).runOnUiThread(()->{
+                            //关闭加载的动画，可能会重复关闭，但是无妨
+                            bindingView.poemLoad.setVisibility(View.GONE);
+                            new Handler().postDelayed(() -> {
+                                bindingView.poemInclude.poemBoardRefresh.setRefreshing(false);
+                                if(!IsOldPoemListNull){
+                                    //如果刷新前就有数据
+                                    poemViewModel.getPoemDetails().setValue(poemViewModel.getPoemDetails().getValue());
+                                }else {
+                                    //如果刷新之前无数据
+                                    poemViewModel.getPoemDetails().setValue(list);
+                                }
+                            }, delay_time);
+                        }
                         );
                     }
                     @Override
@@ -192,7 +211,16 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                         //通过handler取消刷新的UI，并且显示刷新失败
                         Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
                             bindingView.poemInclude.poemBoardRefresh.setRefreshing(false);
+                            //TODO 这里还需要展示加载失败的界面，并且如果点击加载失败会重新加载
                             Toast.makeText(getContext(), "刷新失败，请稍后重试", Toast.LENGTH_LONG).show();
+                            bindingView.poemLoad.setVisibility(View.GONE);
+                            if(poemViewModel.getPoemDetails().getValue()==null){
+                                //如果这时候listview没有数据，就展示失败的页面
+                                bindingView.poemLoadError.setVisibility(View.VISIBLE);
+                            }else {
+                                //如果这时候listview有数据，就将失败的页面关闭
+                                bindingView.poemLoadError.setVisibility(View.GONE);
+                            }
                         });
                     }
                 });
@@ -200,8 +228,20 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
             }catch(Exception e){
                 //出错处理
                 Objects.requireNonNull(getActivity()).runOnUiThread(
-                        () -> Toast.makeText(getContext(),
-                                "刷新失败，请稍后重试！",Toast.LENGTH_LONG).show());
+                        () ->{
+                            bindingView.poemInclude.poemBoardRefresh.setRefreshing(false);
+                            bindingView.poemLoad.setVisibility(View.GONE);
+                            if(poemViewModel.getPoemDetails().getValue()==null){
+                                //如果这时候listview没有数据，就展示失败的页面
+                                bindingView.poemLoadError.setVisibility(View.VISIBLE);
+                            }else {
+                                //如果这时候listview有数据，就将失败的页面关闭
+                                bindingView.poemLoadError.setVisibility(View.GONE);
+                            }
+                            //TODO 这里还需要展示加载失败的界面，并且如果点击加载失败会重新加载
+                            Toast.makeText(getContext(),
+                                    "刷新时出错，请稍后重试！",Toast.LENGTH_LONG).show();
+                        });
             }
         }){
         }.start();
@@ -222,5 +262,14 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
         //由于是刷新，因此需要向后端请求数据而不是加载缓存数据，所以调用freshdata方法
         //异步加载数据，通过监听得到返回的数据
         refreshData();
+    }
+
+    @Override
+    public void loadAnimationOfLoad(){
+        //设置加载动画
+        DoubleBounce doubleBounce = new DoubleBounce();
+        doubleBounce.setBounds(0, 0, 100, 100);
+        doubleBounce.setColor(android.graphics.Color.parseColor("#229954"));
+        bindingView.poemLoadSpinkit.setIndeterminateDrawable(doubleBounce);
     }
 }

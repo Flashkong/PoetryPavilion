@@ -2,6 +2,7 @@ package com.poetrypavilion.poetrypavilion.activities;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.icu.text.TimeZoneFormat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,7 +26,7 @@ import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.github.ybq.android.spinkit.Style;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,ViewPager.OnPageChangeListener {
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
+
         //初始化部件
         initIDs();
 
@@ -71,15 +73,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initIDs(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        left_menu_open_icon = (LinearLayout) findViewById(R.id.left_menu_open_icon) ;
-        drawer_view = (NavigationView) findViewById(R.id.drawer_view);
-        total_content = (ViewPager)findViewById(R.id.total_content);
-        poetry_pavilion = (ImageView)findViewById(R.id.poetry_pavilion);
-        message_box = (ImageView)findViewById(R.id.message_box);
-        find_something = (ImageView)findViewById(R.id.find_something);
-        add_something = (ImageView)findViewById(R.id.add_something);
+        toolbar = findViewById(R.id.toolbar);
+        drawer = findViewById(R.id.drawer_layout);
+        left_menu_open_icon = findViewById(R.id.left_menu_open_icon);
+        drawer_view = findViewById(R.id.drawer_view);
+        total_content = findViewById(R.id.total_content);
+        poetry_pavilion = findViewById(R.id.poetry_pavilion);
+        message_box = findViewById(R.id.message_box);
+        find_something = findViewById(R.id.find_something);
+        add_something = findViewById(R.id.add_something);
     }
     private void setViewPagerContent(){
         ArrayList<Fragment> FragmentList = new ArrayList<>();

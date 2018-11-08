@@ -5,6 +5,7 @@ android {
     defaultConfig {
         applicationId "com.poetrypavilion.poetrypavilion"
         minSdkVersion 15
+        //noinspection OldTargetApi
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -26,38 +27,34 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
     //圆形头像控件
-    implementation "de.hdodenhof:circleimageview:2.1.0"
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
     //诗词和文章界面的炫酷布局
     implementation 'com.alexvasilkov:foldable-layout:1.2.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.alexvasilkov:android-commons:2.0.2'
-
     //富文本的插件
     implementation 'com.zzhoujay.richtext:richtext:3.0.7'
     implementation 'com.zzhoujay:html:1.0.2'
-
     //lifecycle
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
     implementation 'com.google.zxing:core:3.3.0'
-
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-
     //Gson
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     //rxjava
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.4.0'
-
     //下拉刷新插件
     implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
+    //加载动画
+    implementation project(':library')
 }

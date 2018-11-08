@@ -26,6 +26,10 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment i
         bindingView = DataBindingUtil.inflate(inflater, setViewXml(), container, false);
         //调用
         OtherProcess();
+        //显示正在加载界面UI
+        loadAnimationOfLoad();
+        //从缓存加载数据
+        loadData();
         return bindingView.getRoot();
     }
 
@@ -42,4 +46,6 @@ public abstract class BaseFragment<T extends ViewDataBinding> extends Fragment i
     protected void loadData() {}
 
     protected void refreshData(){}
+
+    protected void loadAnimationOfLoad(){}
 }
