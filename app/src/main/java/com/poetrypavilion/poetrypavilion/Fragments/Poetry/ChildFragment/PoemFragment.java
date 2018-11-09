@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.poetrypavilion.poetrypavilion.Acache.ACache;
 import com.poetrypavilion.poetrypavilion.Adapters.PaintingsAdapter;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
+import com.poetrypavilion.poetrypavilion.Items.SpacesItemDecoration;
 import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
 import com.poetrypavilion.poetrypavilion.databinding.PoemFragmentBinding;
@@ -28,6 +30,10 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
     private ACache aCache;
     //设置打开app的时候，refresh_time是1
     private int refresh_time = 1;
+    //标记下拉加载的页数
+    private int top_refresh_page=1;
+    //标记下拉加载的页数
+    private int bottom_refresh_page=1;
 
     @Override
     public int setViewXml() {
@@ -38,6 +44,14 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
     public void OtherProcess() {
         //设置缓存对象
         aCache = ACache.get(getContext());
+        //检测下拉加载页数是否有缓存了
+        if(aCache.getAsString("top_refresh_page")!=null){
+            top_refresh_page=Integer.parseInt(aCache.getAsString("top_refresh_page"));
+        }
+        //设置recyclerView
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        bindingView.poemInclude.poemBoardsRecyclerView.setLayoutManager(manager);
+        bindingView.poemInclude.poemBoardsRecyclerView.addItemDecoration(new SpacesItemDecoration(40));
 
         bindingView.poemInclude.poemBoardDetailLayout.setVisibility(View.INVISIBLE);
         //设置详情页面不能使用手势收起，从而使其适配scrollview
@@ -74,10 +88,10 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
 
         //设置加载失败页面的点击事件
         bindingView.poemLoadError.setOnClickListener(v -> {
-            //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
+            //由于refreshData会将top_refresh_page加一，为了自动加载第一页数据，需要在这里减一
             bindingView.poemLoadError.setVisibility(View.GONE);
             bindingView.poemLoad.setVisibility(View.VISIBLE);
-            refresh_time--;
+            top_refresh_page--;
             refreshData();
         });
     }
@@ -111,11 +125,12 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         poemViewModel = ViewModelProviders.of(this).get(PoemViewModel.class);
 
         poemViewModel.getPoemDetails().observe(this ,poemDetails->{
             PaintingsAdapter adapter = new PaintingsAdapter(poemDetails);
-            bindingView.poemInclude.poemBoardsListView.setAdapter(adapter);
+            bindingView.poemInclude.poemBoardsRecyclerView.setAdapter(adapter);
 
             adapter.setOnXXClickListener(new PaintingsAdapter.XXListener(){
                 @Override
@@ -149,8 +164,8 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                                         () ->{
                                             Toast.makeText(getContext(),
                                                     "没有找到缓存数据，即将自动刷新！",Toast.LENGTH_LONG).show();
-                                            //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
-                                            refresh_time--;
+                                            //由于refreshData会将top_refresh_page加一，为了自动加载第一页数据，需要在这里减一
+                                            top_refresh_page--;
                                             refreshData();
                                         });
                             }
@@ -162,8 +177,8 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                                 () ->{
                                     Toast.makeText(getContext(),
                                             "加载缓存数据时出错，即将自动刷新！",Toast.LENGTH_LONG).show();
-                                    //由于refreshData会将refresh_time加一，为了自动加载第一页数据，需要在这里减一
-                                    refresh_time--;
+                                    //由于refreshData会将top_refresh_page加一，为了自动加载第一页数据，需要在这里减一
+                                    top_refresh_page--;
                                     refreshData();
                                 });
                     }
@@ -175,7 +190,7 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
     @Override
     public void refreshData(){
         //每刷新一次，页面数目加一
-        refresh_time++;
+        top_refresh_page++;
         //下拉刷新后刷新数据
         //使用子线程加载数据
         new Thread(() -> {
@@ -224,7 +239,7 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
                         });
                     }
                 });
-                poemViewModel.getPoemsFromRepository(refresh_time,PoemViewModel.TYPE.REFRESH,aCache);
+                poemViewModel.getPoemsFromRepository(top_refresh_page,PoemViewModel.TYPE.REFRESH,aCache);
             }catch(Exception e){
                 //出错处理
                 Objects.requireNonNull(getActivity()).runOnUiThread(

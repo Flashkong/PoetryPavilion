@@ -1,5 +1,8 @@
 package com.poetrypavilion.poetrypavilion.Adapters;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,19 +19,22 @@ import java.util.List;
 
 
 //PaintingAdapter其实不是Painting的adapter，而是大概的那个滑动的listview的adapter
-public class PaintingsAdapter extends ItemsAdapter<PoemDetail, PaintingsAdapter.ViewHolder>
+public class PaintingsAdapter extends RecyclerView.Adapter<PaintingsAdapter.ViewHolder>
         implements View.OnClickListener {
 
     private XXListener mXXListener;
+    private List<PoemDetail> poemDetailList;
 
     public PaintingsAdapter(List<PoemDetail> poemDetails) {
-//        setItemsList(Arrays.asList(Painting.getAllPaintings(context.getResources())));
-        setItemsList(poemDetails);
+        this.poemDetailList=poemDetails;
     }
 
+    @NonNull
     @Override
-    protected ViewHolder onCreateHolder(ViewGroup parent, int viewType) {
-        final ViewHolder holder = new ViewHolder(parent);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.poem_board_concision,parent,false);
+        ViewHolder holder = new ViewHolder(view);
 
         //设置监听
         holder.layout.setOnClickListener(this);
@@ -38,8 +44,8 @@ public class PaintingsAdapter extends ItemsAdapter<PoemDetail, PaintingsAdapter.
     }
 
     @Override
-    protected void onBindHolder(ViewHolder holder, int position) {
-        final PoemDetail item = getItem(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        PoemDetail item = poemDetailList.get(position);
         //设置tag
         holder.layout.setTag(R.id.poem_board_concision_linear_layout, item);
 
@@ -49,7 +55,7 @@ public class PaintingsAdapter extends ItemsAdapter<PoemDetail, PaintingsAdapter.
 
     private void setListViewContent(ViewHolder holder,PoemDetail item){
         //设置诗歌的内容
-        RichText.from(item.getPoetry()).into(holder.poem_text);
+        holder.poem_text.setText(item.getPoetry());
         //设置头像
 
         //设置用户名
@@ -58,6 +64,11 @@ public class PaintingsAdapter extends ItemsAdapter<PoemDetail, PaintingsAdapter.
         holder.poem_board_concision_user_uplode_time.setText(item.getDynasty());
         //设置诗歌的标题
         holder.poem_board_poem_title.setText(item.getTitle());
+    }
+
+    @Override
+    public int getItemCount(){
+        return poemDetailList.size();
     }
 
     @Override
@@ -83,20 +94,20 @@ public class PaintingsAdapter extends ItemsAdapter<PoemDetail, PaintingsAdapter.
     }
 
     //ViewHolder通常出现在适配器里，为的是listview滚动的时候快速设置值，而不必每次都重新创建很多对象，从而提升性能。
-    static class ViewHolder extends ItemsAdapter.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         final TextView poem_text;
         final LinearLayout layout;
         final TextView poem_board_concision_username;
         final TextView poem_board_concision_user_uplode_time;
         final TextView poem_board_poem_title;
 
-        ViewHolder(ViewGroup parent) {
-            super(Views.inflate(parent, R.layout.poem_board_concision));
-            poem_text = Views.find(itemView, R.id.poem_board_concision_poem);
-            layout = Views.find(itemView, R.id.poem_board_concision_linear_layout);
-            poem_board_concision_username = Views.find(itemView, R.id.poem_board_concision_username);
-            poem_board_concision_user_uplode_time = Views.find(itemView, R.id.poem_board_concision_user_uplode_time);
-            poem_board_poem_title = Views.find(itemView,R.id.poem_board_concision_poem_title);
+        ViewHolder(View view) {
+            super(view);
+            poem_text = view.findViewById( R.id.poem_board_concision_poem);
+            layout =view.findViewById( R.id.poem_board_concision_linear_layout);
+            poem_board_concision_username = view.findViewById(R.id.poem_board_concision_username);
+            poem_board_concision_user_uplode_time = view.findViewById(R.id.poem_board_concision_user_uplode_time);
+            poem_board_poem_title =view.findViewById(R.id.poem_board_concision_poem_title);
         }
     }
 }

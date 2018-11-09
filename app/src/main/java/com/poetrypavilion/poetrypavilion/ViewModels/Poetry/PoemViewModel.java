@@ -39,7 +39,7 @@ public class PoemViewModel extends ViewModel {
     }
 
     //UI中发送接收数据的请求
-    public void getPoemsFromRepository(int fresh_times, TYPE type, ACache aCache){
+    public void getPoemsFromRepository(int top_refresh_page, TYPE type, ACache aCache){
         //需要先设置监听器，否则有可能得到监听器是null
         poemRepository.setOnResponseBackListener(new PoemRepository.ResponseListener() {
             @Override
@@ -49,13 +49,18 @@ public class PoemViewModel extends ViewModel {
                     if(getPoemDetails().getValue()==null){
                         //如果此时listview里面是空的
                         List<PoemDetail> list = CastToListPoem(httpGetPoemBeans);
-//                        getPoemDetails().setValue(list);
+                        //getPoemDetails().setValue(list);
 
                         //设置缓存
                         if(aCache.getAsObject("poems_0_20")!=null){
                             aCache.remove("poems_0_20");
                         }
+                        if(aCache.getAsString("top_refresh_page")!=null){
+                            aCache.remove("top_refresh_page");
+                        }
                         aCache.put("poems_0_20",(ArrayList)list);
+                        //这时候表示我缓存的前十首诗是第一页的
+                        aCache.put("top_refresh_page",String.valueOf(1));
 
                         loadFromHttpListener.onLoadOk(true,list);
                     }else {
@@ -69,13 +74,18 @@ public class PoemViewModel extends ViewModel {
                         if(aCache.getAsObject("poems_0_20")!=null){
                             aCache.remove("poems_0_20");
                         }
+                        if(aCache.getAsString("top_refresh_page")!=null){
+                            aCache.remove("top_refresh_page");
+                        }
                         //判断数据量，如果大于20条，那么取出20条，如果小于20条，取出全部
                         if((temp != null ? temp.size() : 0) >=20){
                             ArrayList<PoemDetail> t = new ArrayList<PoemDetail>(temp.subList(0,20));
-                            aCache.put("poems_0_20",(ArrayList<PoemDetail>)t);
+                            aCache.put("poems_0_20", t);
                         }else {
                             aCache.put("poems_0_20",(ArrayList)temp);
                         }
+                        //top_refresh_page这时候是向后端请求，因此top_refresh_page就记录了返回的最新的数据代表的页数
+                        aCache.put("top_refresh_page",String.valueOf(top_refresh_page));
                         loadFromHttpListener.onLoadOk(false,null);
                     }
                 }else {
@@ -93,7 +103,7 @@ public class PoemViewModel extends ViewModel {
             }
         });
         //发送异步的请求，因此函数不需要接收数据
-        poemRepository.getPoems(fresh_times,type,aCache);
+        poemRepository.getPoems(top_refresh_page,type,aCache);
     }
 
 
