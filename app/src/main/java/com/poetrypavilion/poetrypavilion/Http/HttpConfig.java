@@ -1,15 +1,16 @@
 package com.poetrypavilion.poetrypavilion.Http;
 
-public class Config {
+public class HttpConfig {
     private static String getPoemUrl;
     private static String IPAddress = "http://192.168.43.243:8888/";
+//    private static String IPAddress = "http://127.0.0.1:8888/";
 
     public static String getGetPoemUrl() {
         return getPoemUrl;
     }
 
     public static void setGetPoemUrl(String getPoemUrl) {
-        Config.getPoemUrl = getPoemUrl;
+        HttpConfig.getPoemUrl = getPoemUrl;
     }
 
     public static String getIPAddress() {
@@ -17,6 +18,6 @@ public class Config {
     }
 
     public static void setIPAddress(String IPAddress) {
-        Config.IPAddress = IPAddress;
+        HttpConfig.IPAddress = IPAddress;
     }
 }

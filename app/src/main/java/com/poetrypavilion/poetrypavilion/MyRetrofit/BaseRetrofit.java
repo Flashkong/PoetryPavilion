@@ -1,6 +1,6 @@
 package com.poetrypavilion.poetrypavilion.MyRetrofit;
 
-import com.poetrypavilion.poetrypavilion.Http.Config;
+import com.poetrypavilion.poetrypavilion.Http.HttpConfig;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -15,7 +15,7 @@ public class BaseRetrofit {
     public static Retrofit getRetofitInstance(){
         //步骤4:创建Retrofit对象
         retrofit = new Retrofit.Builder()
-                .baseUrl(Config.getIPAddress()) // 设置 网络请求 Url
+                .baseUrl(HttpConfig.getIPAddress()) // 设置 网络请求 Url
                 .addConverterFactory(GsonConverterFactory.create()) //设置使用Gson解析(记得加入依赖)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create()) // 支持RxJava平台
                 .build();

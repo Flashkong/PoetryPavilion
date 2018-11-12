@@ -7,4 +7,5 @@
     <color name="white">#FFF</color>
     <color name="colorThemeLight">#85DA9A</color>
     <color name="colorGrey">#f0f0f0</color>
+    <color name="red">#f40d0d</color>
 </resources>

@@ -34,8 +34,6 @@ public class PoemRetrofit extends BaseRetrofit{
         //对 发送请求 进行封装
         Call<List<HttpGetPoemBean>> call = requestInterface.getPoems(String.valueOf(fresh_times));
 
-        List<HttpGetPoemBean> poemBeanList = new ArrayList<>();
-
         //发送网络请求(异步)
         call.enqueue(new Callback<List<HttpGetPoemBean>>() {
 

@@ -13,4 +13,13 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a'
+            universalApk true
+        }
+    }
 }
