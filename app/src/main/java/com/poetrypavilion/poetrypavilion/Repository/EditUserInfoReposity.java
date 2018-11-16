@@ -72,7 +72,6 @@ public class EditUserInfoReposity {
             return emails[0];
         else{
             //TODO 这里的返回处理还要做一下，详细一下
-            Toast.makeText(MyApplication.getContext(),"数据库中没有找到当前登陆的用户",Toast.LENGTH_SHORT).show();
             return null;
         }
     }

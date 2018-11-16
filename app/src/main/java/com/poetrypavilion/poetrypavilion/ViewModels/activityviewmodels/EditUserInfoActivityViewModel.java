@@ -2,13 +2,27 @@ package com.poetrypavilion.poetrypavilion.ViewModels.activityviewmodels;
 
 import android.arch.lifecycle.ViewModel;
 import android.graphics.Bitmap;
+import android.net.Uri;
+
 import com.poetrypavilion.poetrypavilion.Repository.EditUserInfoReposity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class EditUserInfoActivityViewModel extends ViewModel {
+
+    public enum Option {
+        Camera, Photo, Ok
+    }
+
+
     private EditUserInfoReposity editUserInfoReposity;
     private ResponseListener mResponseListener;
+    public boolean IsHavePermission = false;
+    public boolean IsSendRequest = false;
+    public Option option;
+    public Uri imageUri;
+    public String Storage_URL;
+    public Bitmap HeadBtmap;
 
     public EditUserInfoActivityViewModel(){
         this.editUserInfoReposity = new EditUserInfoReposity();

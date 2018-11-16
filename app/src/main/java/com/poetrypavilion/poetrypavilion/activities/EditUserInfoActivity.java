@@ -49,19 +49,8 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     private TextView PhotoTextView;
     private View DialogView;
     private Dialog bottomDialog;
-    private boolean IsHavePermission = false;
-    private boolean IsInitDislog = false;
-    private boolean IsSendRequest = false;
-    private Option option;
-    private Uri imageUri;
-    private String Storage_URL;
-    private Bitmap HeadBtmap;
     private EditUserInfoActivityViewModel viewModel;
-
-
-    enum Option {
-        Camera, Photo, Ok
-    }
+    private boolean IsInitDislog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +73,15 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         CameraTextView = DialogView.findViewById(R.id.edit_user_info_dialog_camera_button);
         PhotoTextView = DialogView.findViewById(R.id.edit_user_info_dialog_photo_button);
 
-        IsHavePermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission
+        viewModel.IsHavePermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission
                 .WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        Storage_URL = Environment.getExternalStorageDirectory() + "/PoetryPavilion/camera";
+
+        if(viewModel.Storage_URL==null)
+            viewModel.Storage_URL = Environment.getExternalStorageDirectory() + "/PoetryPavilion/camera";
+
+        //如果旋转屏幕的话，保证图片还是原来拍摄的
+        if(viewModel.HeadBtmap!=null)
+            dataBinding.editUserInfoUserHead.setImageBitmap(viewModel.HeadBtmap);
     }
 
     private void initListener() {
@@ -97,7 +92,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         dataBinding.editUserInfoOk.setOnTouchListener(this);
         viewModel.setOnResponseBackListener((status, message) -> {
             //修改状态
-            IsSendRequest = false;
+            viewModel.IsSendRequest = false;
             if (status) {
                 runOnUiThread(() -> {
                     Toast.makeText(this, "编辑成功！", Toast.LENGTH_SHORT).show();
@@ -140,16 +135,16 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 bottomDialog.show();
                 break;
             case R.id.edit_user_info_dialog_camera_button:
-                option = Option.Camera;
-                if (!IsHavePermission)
+                viewModel.option = EditUserInfoActivityViewModel.Option.Camera;
+                if (!viewModel.IsHavePermission)
                     requestPermission();
                 else {
                     openCamera();
                 }
                 break;
             case R.id.edit_user_info_dialog_photo_button:
-                option = Option.Photo;
-                if (!IsHavePermission)
+                viewModel.option = EditUserInfoActivityViewModel.Option.Photo;
+                if (!viewModel.IsHavePermission)
                     requestPermission();
                 else {
                     openPhoto();
@@ -171,12 +166,13 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                         dataBinding.editUserInfoOk.setImageResource(R.drawable.ok);
                         break;
                     case MotionEvent.ACTION_DOWN://按住事件发生后执行代码的区域，显示密码
+                        dataBinding.editUserInfoOk.setImageResource(R.drawable.okwhite);
                         //首先要检测是否已经有了权限
-                        option = Option.Ok;
-                        if (!IsHavePermission)
+                        viewModel.option = EditUserInfoActivityViewModel.Option.Ok;
+                        if (!viewModel.IsHavePermission)
                             requestPermission();
                         else {
-                            if(!IsSendRequest)
+                            if(!viewModel.IsSendRequest)
                                 sendRequest();
                             else
                                 Toast.makeText(this,"正在修改中，请勿重复点击",Toast.LENGTH_SHORT).show();
@@ -197,19 +193,18 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
     private void sendRequest() {
         String user_name = dataBinding.editUserInfoUserName.getText().toString();
-        dataBinding.editUserInfoOk.setImageResource(R.drawable.okwhite);
         if (checkUserName(user_name)) {
-            if (HeadBtmap == null) {
+            if (viewModel.HeadBtmap == null) {
                 BitmapDrawable drawable = (BitmapDrawable) getResources().getDrawable(R.drawable.default_user_head_img);
                 Bitmap bitmap = drawable.getBitmap();
                 //修改状态
-                IsSendRequest = true;
+                viewModel.IsSendRequest = true;
                 new Thread(() ->
                         viewModel.editUserInfo(saveBitmapFile(bitmap), user_name, bitmap)
                 ).start();
             } else {
                 new Thread(() ->
-                        viewModel.editUserInfo(saveBitmapFile(HeadBtmap), user_name, HeadBtmap)
+                        viewModel.editUserInfo(saveBitmapFile(viewModel.HeadBtmap), user_name, viewModel.HeadBtmap)
                 ).start();
             }
         }
@@ -229,7 +224,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 //对应从相机打开
                 if (resultCode == RESULT_OK) {
                     // 裁剪图片
-                    cropPhoto(imageUri);
+                    cropPhoto(viewModel.imageUri);
                 }
                 break;
             case 3:
@@ -241,7 +236,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                         //显示头像
                         dataBinding.editUserInfoUserHead.setImageBitmap(head);
                         //传到上层
-                        HeadBtmap = head;
+                        viewModel.HeadBtmap = head;
                     }
                 }
                 break;
@@ -287,7 +282,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     }
 
     public File saveBitmapFile(Bitmap bitmap) {
-        File file = new File(Storage_URL, "head.png");//将要保存图片的路径
+        File file = new File(viewModel.Storage_URL, "head.png");//将要保存图片的路径
         try {
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
@@ -307,12 +302,12 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         @SuppressLint("SimpleDateFormat")
         String dateNowStr = new SimpleDateFormat("yyyyMMddhhmmss").format(date);
         //检测是否有给定的文件夹，如果没有则创建
-        File destDir = new File(Storage_URL);
+        File destDir = new File(viewModel.Storage_URL);
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
         //创建文件
-        File outputImage = new File(Storage_URL, dateNowStr + ".jpg");
+        File outputImage = new File(viewModel.Storage_URL, dateNowStr + ".jpg");
         try {
             if (outputImage.exists()) {
                 outputImage.delete();
@@ -322,12 +317,12 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
             e.printStackTrace();
         }
         if (Build.VERSION.SDK_INT < 24) {
-            imageUri = Uri.fromFile(outputImage);
+            viewModel.imageUri = Uri.fromFile(outputImage);
         } else {
-            imageUri = FileProvider.getUriForFile(this, "com.poetrypavilion.poetrypavilion.fileprovider", outputImage);
+            viewModel.imageUri = FileProvider.getUriForFile(this, "com.poetrypavilion.poetrypavilion.fileprovider", outputImage);
         }
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, viewModel.imageUri);
         // 采用ForResult打开
         startActivityForResult(intentCamera, 2);
     }
@@ -355,20 +350,20 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    IsHavePermission = true;
-                    if (option.equals(Option.Camera)) {
+                    viewModel.IsHavePermission = true;
+                    if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Camera)) {
                         openCamera();
-                    } else if (option.equals(Option.Photo)) {
+                    } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Photo)) {
                         openPhoto();
-                    } else if (option.equals(Option.Ok)) {
+                    } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Ok)) {
                         sendRequest();
                     }
                 } else {
-                    if (option.equals(Option.Camera)) {
+                    if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Camera)) {
                         Toast.makeText(this, "您已禁止了权限，只有开启权限才能使用相机！", Toast.LENGTH_LONG).show();
-                    } else if (option.equals(Option.Photo)) {
+                    } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Photo)) {
                         Toast.makeText(this, "您已禁止了权限，只有开启权限才能使用图库！", Toast.LENGTH_LONG).show();
-                    } else if (option.equals(Option.Ok)) {
+                    } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Ok)) {
                         Toast.makeText(this, "您已禁止了权限，只有开启权限才能保存修改！", Toast.LENGTH_LONG).show();
                     }
                 }
