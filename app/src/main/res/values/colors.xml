@@ -8,4 +8,6 @@
     <color name="colorThemeLight">#85DA9A</color>
     <color name="colorGrey">#f0f0f0</color>
     <color name="red">#f40d0d</color>
+    <color name="gray">#f2f1f1</color>
+    <color name="black_gray">#4b4848</color>
 </resources>

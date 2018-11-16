@@ -2,6 +2,8 @@ package com.poetrypavilion.poetrypavilion.Repository;
 
 import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
 import com.poetrypavilion.poetrypavilion.MyRetrofit.MainLoginRetrofit;
+import com.poetrypavilion.poetrypavilion.Room.Database.PoetryPavilionDB;
+import com.poetrypavilion.poetrypavilion.Room.Entity.LoginUserHistory;
 import com.poetrypavilion.poetrypavilion.Utils.Encrypt.RSAUtils;
 
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +14,7 @@ import static com.poetrypavilion.poetrypavilion.Configs.Config.publicKey;
 public class MainLoginRepository {
     private MainLoginRetrofit mainLoginRetrofit;
     private ResponseListener mResponseListener;
+    private String RegistEmail;
 
     public MainLoginRepository(){
         this.mainLoginRetrofit = new MainLoginRetrofit();
@@ -35,13 +38,32 @@ public class MainLoginRepository {
 
             @Override
             public void onRegisterRealBack(HttpCheckRegisterBean httpCheckRegisterBean) {
-                if(httpCheckRegisterBean!=null){
-                    mResponseListener.onRegisterRealBack(httpCheckRegisterBean);
+                if(httpCheckRegisterBean==null){
+                    mResponseListener.onRegisterRealBack(false,"连接服务器时出错");
                 }else {
-                    mResponseListener.onRegisterRealBack(null);
+                    if(httpCheckRegisterBean.isStatus()){
+                        mResponseListener.onRegisterRealBack(true,"注册成功");
+                        //这时候就已经登录成功了，将登录历史信息写入数据库
+                        writeIntoDataBase();
+                    }else {
+                        switch (httpCheckRegisterBean.getMessage()){
+                            case "Fail to register,The mail has existed!":
+                                mResponseListener.onRegisterRealBack(false,"该邮箱已被注册");
+                                break;
+                            case "Register Failed!":
+                                mResponseListener.onRegisterRealBack(false,"注册失败");
+                                break;
+                        }
+                    }
                 }
             }
         });
+    }
+
+    private void writeIntoDataBase(){
+        PoetryPavilionDB db = PoetryPavilionDB.getDatabase();
+        LoginUserHistory history = new LoginUserHistory(this.RegistEmail,"",1,new byte[0]);
+        db.loginUserHistoryDao().InsertLoginHistory(history);
     }
 
     public void RegisterCheckEmail(String email){
@@ -63,13 +85,15 @@ public class MainLoginRepository {
         }
         //回调结果在上面
         mainLoginRetrofit.RegisterReal(email,encodedData);
+        //保存发送请求的数据
+        this.RegistEmail = email;
         return new HttpCheckRegisterBean(true,"加密密码成功");
     }
 
     //定义发送请求后收到请求的监听器
     public interface ResponseListener {
         void onCheckEmailBack(HttpCheckRegisterBean httpCheckRegisterBean);
-        void onRegisterRealBack(HttpCheckRegisterBean httpCheckRegisterBean);
+        void onRegisterRealBack(boolean status,String message);
     }
 
     public void setOnResponseBackListener(ResponseListener ResponseListener) {

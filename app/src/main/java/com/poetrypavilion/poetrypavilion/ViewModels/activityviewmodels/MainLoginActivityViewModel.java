@@ -32,22 +32,8 @@ public class MainLoginActivityViewModel extends ViewModel {
             }
 
             @Override
-            public void onRegisterRealBack(HttpCheckRegisterBean httpCheckRegisterBean) {
-                if(httpCheckRegisterBean==null){
-                    mResponseListener.onRegisterRealBack(false,"连接服务器时出错");
-                }else {
-                    if(httpCheckRegisterBean.isStatus()){
-                        mResponseListener.onRegisterRealBack(true,"注册成功");
-                    }else {
-                        switch (httpCheckRegisterBean.getMessage()){
-                            case "Fail to register,The mail has existed!":
-                                mResponseListener.onRegisterRealBack(false,"该邮箱已被注册");
-                                break;
-                            case "Register Failed!":
-                                mResponseListener.onRegisterRealBack(false,"注册失败");
-                        }
-                    }
-                }
+            public void onRegisterRealBack(boolean status,String message) {
+                mResponseListener.onRegisterRealBack(status,message);
             }
         });
     }

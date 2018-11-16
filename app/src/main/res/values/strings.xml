@@ -23,4 +23,10 @@
     <string name="suibiankankan">随便看看</string>
     <string name="back">返回</string>
     <string name="input_message">请输入相关信息</string>
+    <string name="title_activity_edit_user_info">EditUserInfoActivity</string>
+    <string name="set_username">设置一个帅气的用户名</string>
+    <string name="select_from_photos">从相册选择图片</string>
+    <string name="Take_a_photo">拍一张</string>
+    <string name="cancel">取消</string>
+    <string name="choose_a_way">选择一种方式</string>
 </resources>

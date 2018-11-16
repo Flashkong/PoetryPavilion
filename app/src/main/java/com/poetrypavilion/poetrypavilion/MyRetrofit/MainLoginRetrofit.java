@@ -4,7 +4,6 @@ package com.poetrypavilion.poetrypavilion.MyRetrofit;
 import android.support.annotation.NonNull;
 
 import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.RegisterBody;
 import com.poetrypavilion.poetrypavilion.Http.RequestInterFaces.InterfaceBuilder;
 import com.poetrypavilion.poetrypavilion.Http.RequestInterFaces.RequestInterface;
 

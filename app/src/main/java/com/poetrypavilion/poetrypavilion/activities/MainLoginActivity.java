@@ -2,6 +2,7 @@ package com.poetrypavilion.poetrypavilion.activities;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
@@ -147,8 +148,9 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
                         //注册成功
                         dataBinding.noteText.setText("注册成功");
                         dataBinding.registerSecond.setText("注册");
-                        //TODO 这里需要这里需要跳转页面
-
+                        //这里需要这里需要跳转页面
+                        Intent intent = new Intent(MainLoginActivity.this,EditUserInfoActivity.class);
+                        startActivity(intent);
                         //为了避免正在检测的时候，用户点击了返回按钮，当结果再次打开页面的时候结果返回结果出现，因此在这里需要清除信息
                         if(level==Level.Main){
                             clearMessage();
