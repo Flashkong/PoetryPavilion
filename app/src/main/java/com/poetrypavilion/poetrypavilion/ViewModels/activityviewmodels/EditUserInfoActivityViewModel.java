@@ -22,7 +22,12 @@ public class EditUserInfoActivityViewModel extends ViewModel {
     public Option option;
     public Uri imageUri;
     public String Storage_URL;
+    //这里的headBtmap是给activity用的，里面存储了当前的头像数据
     public Bitmap HeadBtmap;
+    //这里存储的发送请求的图片的bytes
+    public byte[] headBytes;
+    //这里可以保证发送请求后，username不变，即使edittext的内容改变
+    public String userName;
 
     public EditUserInfoActivityViewModel(){
         this.editUserInfoReposity = new EditUserInfoReposity();
@@ -35,11 +40,11 @@ public class EditUserInfoActivityViewModel extends ViewModel {
         });
     }
 
-    public void editUserInfo(File file, String name , Bitmap bitmap){
-        byte[] photo = BitmapToBytes(bitmap);
+    public void editUserInfo(File file, Bitmap bitmap){
+        headBytes = BitmapToBytes(bitmap);
         //首先需要更新reposity里面记录的值
-        editUserInfoReposity.storeMessage(name,photo);
-        editUserInfoReposity.editUserInfo(file,name);
+        editUserInfoReposity.storeMessage(this.userName,headBytes);
+        editUserInfoReposity.editUserInfo(file,this.userName);
     }
 
     private byte[] BitmapToBytes(Bitmap bitmap)

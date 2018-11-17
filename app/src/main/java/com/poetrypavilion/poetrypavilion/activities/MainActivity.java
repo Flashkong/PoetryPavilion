@@ -1,9 +1,11 @@
 package com.poetrypavilion.poetrypavilion.activities;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModelProviders;
-import android.icu.text.TimeZoneFormat;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,19 +16,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.poetrypavilion.poetrypavilion.Adapters.MyFragmentPagerAdapter;
 import com.poetrypavilion.poetrypavilion.Fragments.Find.FindFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Message.MessageFragment;
 import com.poetrypavilion.poetrypavilion.Fragments.Poetry.PoetryFragment;
 import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHandle.BackHandlerHelper;
-import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
-import com.github.ybq.android.spinkit.Style;
+
+import com.poetrypavilion.poetrypavilion.Utils.MyApplication;
+import com.poetrypavilion.poetrypavilion.ViewModels.activityviewmodels.MainActivityViewModel;
+import com.poetrypavilion.poetrypavilion.databinding.ActivityMainBinding;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,ViewPager.OnPageChangeListener {
 
@@ -35,22 +45,28 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private LinearLayout left_menu_open_icon;
     private NavigationView drawer_view;
-    private ViewPager total_content;
+    private ViewPager total_content_viewPager;
     private ImageView poetry_pavilion;
     private ImageView message_box;
     private ImageView find_something;
     private ImageView add_something;
-    private long lastBackPress;
+    private MainActivityViewModel viewModel;
+    private CircleImageView left_navigation_user_image;
+    private TextView left_navigation_user_name;
+    private LinearLayout left_navigation_login_layout;
+    private LinearLayout navigation_top_linearLayout;
+    private Button left_navigation_login;
+    private CircleImageView left_menu_open_image;
 
     @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if(!BackHandlerHelper.handleBackPress(this)){
-                super.onBackPressed();
-            }
-        }
+    protected void onNewIntent(Intent intent) {
+
+        super.onNewIntent(intent);
+
+        setIntent(intent);
+
+        getIntentData(getIntent());
+
     }
 
     @Override
@@ -59,8 +75,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
 
-        //初始化部件
-        initIDs();
+        //设置viewmodel
+        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+
+        //如果在注册过程中，活动被系统收回，则会调用onCreate方法，这时候需要得到Intent的数据
+        getIntentData(getIntent());
+
+        //初始化
+        init();
 
         //去除默认Title显示
         if (getSupportActionBar() != null) {
@@ -72,17 +94,40 @@ public class MainActivity extends AppCompatActivity
         setListeners();
     }
 
-    private void initIDs(){
+    private void init(){
+        //需要在从数据库请求数据之前就设置监听
+        viewModel.setGetLoginUserBackListener(() -> {
+            if(viewModel.IsLogin){
+                // 把之前的界面隐藏，显示新的界面
+                runOnUiThread(this::changeUserHeadAndNameView);
+            }else {
+                runOnUiThread(()->{
+                    Toast.makeText(MyApplication.getContext(),"当前没有用户登录",Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+        //首先就去获取是否登录的信息
+        new Thread(()->
+                viewModel.getUserInfo()
+        ).start();
+
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
         left_menu_open_icon = findViewById(R.id.left_menu_open_icon);
         drawer_view = findViewById(R.id.drawer_view);
-        total_content = findViewById(R.id.total_content);
+        total_content_viewPager = findViewById(R.id.total_content);
         poetry_pavilion = findViewById(R.id.poetry_pavilion);
         message_box = findViewById(R.id.message_box);
         find_something = findViewById(R.id.find_something);
         add_something = findViewById(R.id.add_something);
+        left_menu_open_image = findViewById(R.id.left_menu_open_image);
+        left_navigation_user_image = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_user_head);
+        left_navigation_user_name = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_user_name);
+        left_navigation_login_layout = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_login_layout);
+        navigation_top_linearLayout = drawer_view.getHeaderView(0).findViewById(R.id.navigation_top_linearLayout);
+        left_navigation_login = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_login);
     }
+
     private void setViewPagerContent(){
         ArrayList<Fragment> FragmentList = new ArrayList<>();
         FragmentList.add(new PoetryFragment());
@@ -90,10 +135,10 @@ public class MainActivity extends AppCompatActivity
         FragmentList.add(new FindFragment());
         // 注意使用的是：getSupportFragmentManager
         MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), FragmentList);
-        total_content.setAdapter(adapter);
+        total_content_viewPager.setAdapter(adapter);
         // 设置ViewPager最大缓存的页面个数(cpu消耗少)
-        total_content.setOffscreenPageLimit(2);
-        total_content.addOnPageChangeListener(this);
+        total_content_viewPager.setOffscreenPageLimit(2);
+        total_content_viewPager.addOnPageChangeListener(this);
         //调用自己写的函数设置默认的页面
         setCurrentItem(0);
     }
@@ -104,6 +149,21 @@ public class MainActivity extends AppCompatActivity
         message_box.setOnClickListener(this);
         find_something.setOnClickListener(this);
         add_something.setOnClickListener(this);
+        left_navigation_login.setOnClickListener(this);
+    }
+
+    private void getIntentData(Intent intent){
+        byte[] image = intent.getByteArrayExtra("head");
+        String name = intent.getStringExtra("name");
+        if(image!=null&&name!=null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(image, 0,
+                    image.length);
+            navigation_top_linearLayout.setVisibility(View.VISIBLE);
+            left_navigation_login_layout.setVisibility(View.GONE);
+            left_navigation_user_image.setImageBitmap(bitmap);
+            left_menu_open_image.setImageBitmap(bitmap);
+            left_navigation_user_name.setText(name);
+        }
     }
 
     //左侧抽屉的select的选择方法
@@ -140,22 +200,29 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.poetry_pavilion:
                 //如果点击《诗词阁》的时候页面不是在诗词阁这一栏，那么就设置页面为诗词阁
-                if(total_content.getCurrentItem()!=0){
+                if(total_content_viewPager.getCurrentItem()!=0){
                     this.setCurrentItem(0);
                 }
                 break;
             case R.id.message_box:
-                if(total_content.getCurrentItem()!=1){
+                if(total_content_viewPager.getCurrentItem()!=1){
                     this.setCurrentItem(1);
                 }
                 break;
             case R.id.find_something:
-                if(total_content.getCurrentItem()!=2){
+                if(total_content_viewPager.getCurrentItem()!=2){
                     this.setCurrentItem(2);
                 }
                 break;
             case R.id.add_something:
                 break;
+            case R.id.left_navigation_login:
+                //去往登录和注册的页面
+                goToUserLogin();
+                //关闭菜单页面,延迟一秒钟
+                new Handler().postDelayed(()->{
+                    drawer.closeDrawer(GravityCompat.START);
+                },1000);
             default:
                     break;
         }
@@ -196,12 +263,36 @@ public class MainActivity extends AppCompatActivity
                 isPoetry = true;
                 break;
         }
-        if(total_content.getCurrentItem()!=itemNum){
-            total_content.setCurrentItem(itemNum);
+        if(total_content_viewPager.getCurrentItem()!=itemNum){
+            total_content_viewPager.setCurrentItem(itemNum);
         }
         //设置那三个图标的是否选中的状态
         poetry_pavilion.setSelected(isPoetry);
         message_box.setSelected(isMessage);
         find_something.setSelected(isFind);
+    }
+
+    private void changeUserHeadAndNameView(){
+        navigation_top_linearLayout.setVisibility(View.VISIBLE);
+        left_navigation_login_layout.setVisibility(View.GONE);
+        left_navigation_user_image.setImageBitmap(viewModel.user_Head);
+        left_menu_open_image.setImageBitmap(viewModel.user_Head);
+        left_navigation_user_name.setText(viewModel.user_name);
+    }
+
+    private void goToUserLogin(){
+        Intent intent = new Intent(MainActivity.this,MainLoginActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if(!BackHandlerHelper.handleBackPress(this)){
+                super.onBackPressed();
+            }
+        }
     }
 }

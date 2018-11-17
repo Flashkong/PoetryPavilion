@@ -2,7 +2,7 @@
     <string name="app_name">诗文阁</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">用户名</string>
+    <string name="nav_header_title">随风而行</string>
     <string name="nav_header_subtitle">其他东西</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -29,4 +29,6 @@
     <string name="Take_a_photo">拍一张</string>
     <string name="cancel">取消</string>
     <string name="choose_a_way">选择一种方式</string>
+    <string name="login_lead_message">登录诗文阁，\n感受诗意人生。</string>
+    <string name="login">立即登录</string>
 </resources>

@@ -96,7 +96,11 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
             if (status) {
                 runOnUiThread(() -> {
                     Toast.makeText(this, "编辑成功！", Toast.LENGTH_SHORT).show();
-                    //TODO 这里写好跳转的代码
+                    //好跳转的代码
+                    Intent intent = new Intent(EditUserInfoActivity.this,MainActivity.class);
+                    intent.putExtra("head",viewModel.headBytes);
+                    intent.putExtra("name",viewModel.userName);
+                    startActivity(intent);
                 });
             } else {
                 switch (message) {
@@ -192,19 +196,19 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     }
 
     private void sendRequest() {
-        String user_name = dataBinding.editUserInfoUserName.getText().toString();
-        if (checkUserName(user_name)) {
+        viewModel.userName = dataBinding.editUserInfoUserName.getText().toString();
+        if (checkUserName(viewModel.userName)) {
             if (viewModel.HeadBtmap == null) {
                 BitmapDrawable drawable = (BitmapDrawable) getResources().getDrawable(R.drawable.default_user_head_img);
                 Bitmap bitmap = drawable.getBitmap();
                 //修改状态
                 viewModel.IsSendRequest = true;
                 new Thread(() ->
-                        viewModel.editUserInfo(saveBitmapFile(bitmap), user_name, bitmap)
+                        viewModel.editUserInfo(saveBitmapFile(bitmap), bitmap)
                 ).start();
             } else {
                 new Thread(() ->
-                        viewModel.editUserInfo(saveBitmapFile(viewModel.HeadBtmap), user_name, viewModel.HeadBtmap)
+                        viewModel.editUserInfo(saveBitmapFile(viewModel.HeadBtmap), viewModel.HeadBtmap)
                 ).start();
             }
         }
@@ -356,7 +360,10 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                     } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Photo)) {
                         openPhoto();
                     } else if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Ok)) {
-                        sendRequest();
+                        if(!viewModel.IsSendRequest)
+                            sendRequest();
+                        else
+                            Toast.makeText(this,"正在修改中，请勿重复点击",Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     if (viewModel.option.equals(EditUserInfoActivityViewModel.Option.Camera)) {

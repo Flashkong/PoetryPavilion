@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.poetrypavilion.poetrypavilion.Room.Entity.LoginUserHistory;
+import com.poetrypavilion.poetrypavilion.Room.Entity.UserInfoTuple;
 
 @Dao
 public interface LoginUserHistoryDao {
@@ -18,4 +19,7 @@ public interface LoginUserHistoryDao {
 
     @Update
     void updateUserLoginHistory(LoginUserHistory history);
+
+    @Query("SELECT user_name,user_head_img FROM loginhistory WHERE is_login is 1")
+    UserInfoTuple[] getUserNameAndHeadImg();
 }
