@@ -12,7 +12,6 @@ import com.alexvasilkov.android.commons.adapters.ItemsAdapter;
 import com.alexvasilkov.android.commons.ui.Views;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
 import com.poetrypavilion.poetrypavilion.R;
-import com.zzhoujay.richtext.RichText;
 
 
 import java.util.List;
