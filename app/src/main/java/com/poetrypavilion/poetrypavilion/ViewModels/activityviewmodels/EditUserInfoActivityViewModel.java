@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import com.poetrypavilion.poetrypavilion.Repository.EditUserInfoReposity;
+import com.poetrypavilion.poetrypavilion.Utils.FileAndBitmapAndBytes;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
@@ -41,18 +43,12 @@ public class EditUserInfoActivityViewModel extends ViewModel {
     }
 
     public void editUserInfo(File file, Bitmap bitmap){
-        headBytes = BitmapToBytes(bitmap);
+        headBytes = FileAndBitmapAndBytes.BitmapToBytes(bitmap);
         //首先需要更新reposity里面记录的值
         editUserInfoReposity.storeMessage(this.userName,headBytes);
         editUserInfoReposity.editUserInfo(file,this.userName);
     }
 
-    private byte[] BitmapToBytes(Bitmap bitmap)
-    {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        return baos.toByteArray();
-    }
 
     //定义发送请求后收到请求的监听器
     public interface ResponseListener {

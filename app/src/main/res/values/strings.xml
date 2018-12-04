@@ -31,4 +31,11 @@
     <string name="choose_a_way">选择一种方式</string>
     <string name="login_lead_message">登录诗文阁，\n感受诗意人生。</string>
     <string name="login">立即登录</string>
+    <string name="add_artical">添加文章</string>
+    <string name="artical">文章</string>
+    <string name="Edit">随心编辑</string>
+    <string name="poems">诗词</string>
+    <string name="edit_poem_title">在这里输入标题</string>
+    <string name="edit_poem">编辑诗词</string>
+    <string name="send_poem">发表</string>
 </resources>

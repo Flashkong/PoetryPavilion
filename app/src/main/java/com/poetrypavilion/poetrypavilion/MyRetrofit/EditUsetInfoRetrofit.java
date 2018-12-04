@@ -3,7 +3,7 @@ package com.poetrypavilion.poetrypavilion.MyRetrofit;
 
 import android.support.annotation.NonNull;
 
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
+import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpMainBean;
 import com.poetrypavilion.poetrypavilion.Http.RequestInterFaces.InterfaceBuilder;
 import com.poetrypavilion.poetrypavilion.Http.RequestInterFaces.RequestInterface;
 
@@ -32,19 +32,19 @@ public class EditUsetInfoRetrofit extends BaseRetrofit{
 
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("user_avatar",
                 file_name, body_file);
-        Call<HttpCheckRegisterBean> call =  requestInterface.EditUserInfo(body_email,body_name,filePart);
+        Call<HttpMainBean> call =  requestInterface.EditUserInfo(body_email,body_name,filePart);
 
-        call.enqueue(new Callback<HttpCheckRegisterBean>() {
+        call.enqueue(new Callback<HttpMainBean>() {
             @Override
-            public void onResponse(@NonNull Call<HttpCheckRegisterBean> call,
-                                   @NonNull Response<HttpCheckRegisterBean> response) {
+            public void onResponse(@NonNull Call<HttpMainBean> call,
+                                   @NonNull Response<HttpMainBean> response) {
                 new Thread(()->{
                     mResponseListener.onEditUserInfoBack(response.body());
                 }).start();
             }
 
             @Override
-            public void onFailure(@NonNull Call<HttpCheckRegisterBean> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<HttpMainBean> call, @NonNull Throwable t) {
                 new Thread(()->{
                     mResponseListener.onEditUserInfoBack(null);
                 }).start();
@@ -54,7 +54,7 @@ public class EditUsetInfoRetrofit extends BaseRetrofit{
 
     //定义发送请求后收到请求的监听器
     public interface ResponseListener {
-        void onEditUserInfoBack(HttpCheckRegisterBean httpCheckRegisterBean);
+        void onEditUserInfoBack(HttpMainBean httpMainBean);
     }
 
     public void setOnEditUserInfoBackListener(ResponseListener ResponseListener) {

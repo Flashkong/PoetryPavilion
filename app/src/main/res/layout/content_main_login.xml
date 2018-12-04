@@ -118,8 +118,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp">
+                    android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/login_edit_password"
@@ -151,6 +150,16 @@
                         android:text="@string/forget_password"
                         android:textSize="14sp" />
                 </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/login_note_text"
+                    android:text="@string/input_message"
+                    android:textSize="15sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/red"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/Login_second"

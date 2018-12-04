@@ -1,6 +1,5 @@
 package com.poetrypavilion.poetrypavilion.Repository;
 
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
 import com.poetrypavilion.poetrypavilion.Room.Database.PoetryPavilionDB;
 import com.poetrypavilion.poetrypavilion.Room.Entity.UserInfoTuple;
 

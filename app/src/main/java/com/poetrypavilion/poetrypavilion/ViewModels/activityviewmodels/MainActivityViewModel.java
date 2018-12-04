@@ -4,10 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
 import com.poetrypavilion.poetrypavilion.Repository.MainAcitvityReposity;
-import com.poetrypavilion.poetrypavilion.Repository.MainLoginRepository;
-import com.poetrypavilion.poetrypavilion.Room.Entity.UserInfoTuple;
 
 public class MainActivityViewModel extends ViewModel {
     private MainAcitvityReposity mainAcitvityReposity;

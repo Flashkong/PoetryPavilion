@@ -1,5 +1,6 @@
 package com.poetrypavilion.poetrypavilion.activities;
 
+import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,10 +34,10 @@ import com.poetrypavilion.poetrypavilion.R;
 import com.poetrypavilion.poetrypavilion.Utils.BackHandle.BackHandlerHelper;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.poetrypavilion.poetrypavilion.Utils.MyApplication;
 import com.poetrypavilion.poetrypavilion.ViewModels.activityviewmodels.MainActivityViewModel;
-import com.poetrypavilion.poetrypavilion.databinding.ActivityMainBinding;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,6 +61,11 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout navigation_top_linearLayout;
     private Button left_navigation_login;
     private CircleImageView left_menu_open_image;
+    private Dialog AddDialog;
+    private View DialogView;
+    private LinearLayout PostPoem;
+    private LinearLayout PostArtical;
+    private boolean IsInitDislog = false;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -126,6 +135,10 @@ public class MainActivity extends AppCompatActivity
         left_navigation_login_layout = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_login_layout);
         navigation_top_linearLayout = drawer_view.getHeaderView(0).findViewById(R.id.navigation_top_linearLayout);
         left_navigation_login = drawer_view.getHeaderView(0).findViewById(R.id.left_navigation_login);
+
+        DialogView = LayoutInflater.from(this).inflate(R.layout.add_dialog_content, null);
+        PostPoem = DialogView.findViewById(R.id.post_new_poems);
+        PostArtical = DialogView.findViewById(R.id.post_artical);
     }
 
     private void setViewPagerContent(){
@@ -150,6 +163,8 @@ public class MainActivity extends AppCompatActivity
         find_something.setOnClickListener(this);
         add_something.setOnClickListener(this);
         left_navigation_login.setOnClickListener(this);
+        PostPoem.setOnClickListener(this);
+        PostArtical.setOnClickListener(this);
     }
 
     private void getIntentData(Intent intent){
@@ -202,6 +217,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.add_something:
+                if (!IsInitDislog) {
+                    initDialog();
+                    IsInitDislog = true;
+                }
+                AddDialog.show();
                 break;
             case R.id.left_navigation_login:
                 //去往登录和注册的页面
@@ -210,9 +230,34 @@ public class MainActivity extends AppCompatActivity
                 new Handler().postDelayed(()->{
                     drawer.closeDrawer(GravityCompat.START);
                 },1000);
+                break;
+            case R.id.post_new_poems:
+                AddDialog.cancel();
+                //判断当前是不是登录状态
+                if(left_navigation_login_layout.getVisibility()==View.VISIBLE){
+                    goToUserLogin();
+                }else {
+                    goToEditPoem();
+                }
+                break;
+            case R.id.post_artical:
+                //TODO 传递到新的活动中去
+                break;
             default:
-                    break;
+                break;
         }
+    }
+
+    private void initDialog() {
+        //初始化dialog
+        AddDialog = new Dialog(this, R.style.BottomDialog);
+        AddDialog.setContentView(DialogView);
+        ViewGroup.LayoutParams layoutParams = DialogView.getLayoutParams();
+        layoutParams.width = getResources().getDisplayMetrics().widthPixels;
+        DialogView.setLayoutParams(layoutParams);
+        Objects.requireNonNull(AddDialog.getWindow()).setGravity(Gravity.BOTTOM);
+        AddDialog.setCanceledOnTouchOutside(true);
+        AddDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
     }
 
     //这个方法会在屏幕滚动过程中不断被调用
@@ -269,6 +314,11 @@ public class MainActivity extends AppCompatActivity
 
     private void goToUserLogin(){
         Intent intent = new Intent(MainActivity.this,MainLoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void goToEditPoem(){
+        Intent intent = new Intent(MainActivity.this,EditPoemActivity.class);
         startActivity(intent);
     }
 

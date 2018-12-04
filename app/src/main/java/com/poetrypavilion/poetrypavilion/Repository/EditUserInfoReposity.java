@@ -1,13 +1,10 @@
 package com.poetrypavilion.poetrypavilion.Repository;
 
-import android.widget.Toast;
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
 import com.poetrypavilion.poetrypavilion.MyRetrofit.EditUsetInfoRetrofit;
 import com.poetrypavilion.poetrypavilion.Room.Database.PoetryPavilionDB;
 import com.poetrypavilion.poetrypavilion.Room.Entity.LoginUserHistory;
-import com.poetrypavilion.poetrypavilion.Utils.MyApplication;
+
 import java.io.File;
-import java.io.StringReader;
 
 public class EditUserInfoReposity {
     private EditUsetInfoRetrofit editUsetInfoRetrofit;

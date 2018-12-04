@@ -3,7 +3,11 @@ package com.poetrypavilion.poetrypavilion.activities;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,12 +19,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpCheckRegisterBean;
+import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpMainBean;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.FileAndBitmapAndBytes;
 import com.poetrypavilion.poetrypavilion.Utils.StatusBarUtils;
 import com.poetrypavilion.poetrypavilion.ViewModels.activityviewmodels.MainLoginActivityViewModel;
 import com.poetrypavilion.poetrypavilion.databinding.ContentMainLoginBinding;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +39,8 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
     private String register_password;
     private String register_confirm_password;
     private Level level;
+    private String loginEmail;
+    private String loginPassword;
 
     enum Level{
         Main,Login,Register
@@ -65,6 +74,7 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
         dataBinding.registerEditPasswordImg.setOnTouchListener(this);
         dataBinding.registerConfirmPasswordImg.setOnTouchListener(this);
         dataBinding.loginBack.setOnClickListener(this);
+        dataBinding.LoginSecond.setOnClickListener(this);
 
         //添加文字监听,只要编辑一个字，就会调用这个方法
         dataBinding.registerEditEmail.addTextChangedListener(new TextWatcher() {
@@ -177,6 +187,52 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
                     });
                 }
             }
+
+            @Override
+            public void onLoginRealBack(boolean status, String message) {
+                if(status){
+                    runOnUiThread(()->{
+                        if(level==Level.Main){
+                            clearMessage();
+                        }
+                        if(message.equals("登录成功,但是获取用户头像失败")){
+                            dataBinding.loginNoteText.setText("登录成功,但是获取用户头像失败");
+                            Toast.makeText(getApplicationContext(),"登录成功,但获取用户头像失败",Toast.LENGTH_SHORT).show();
+                            @SuppressLint("ResourceType")
+                            InputStream is = getResources().openRawResource(R.drawable.default_user_head_img);
+                            Bitmap mBitmap = BitmapFactory.decodeStream(is);
+
+                            Intent intent = new Intent(MainLoginActivity.this,MainActivity.class);
+                            intent.putExtra("head",FileAndBitmapAndBytes.BitmapToBytes(mBitmap));
+                            intent.putExtra("name",viewModel.getMainLoginRepository().getLoginName());
+                            startActivity(intent);
+                        }else if(message.equals("登录成功")) {
+                            dataBinding.loginNoteText.setText("登录成功");
+                            Intent intent = new Intent(MainLoginActivity.this,MainActivity.class);
+                            intent.putExtra("head",viewModel.getMainLoginRepository().getUserHeaderImg());
+                            intent.putExtra("name",viewModel.getMainLoginRepository().getLoginName());
+                            startActivity(intent);
+                        }
+                    });
+                }else {
+                    runOnUiThread(()->{
+                        if(level==Level.Main){
+                            clearMessage();
+                        }
+                        switch (message){
+                            case "连接服务器时出错":
+                                dataBinding.loginNoteText.setText("连接服务器时出错");
+                                break;
+                            case "邮箱不存在":
+                                dataBinding.loginNoteText.setText("邮箱不存在");
+                                break;
+                            case "密码错误":
+                                dataBinding.loginNoteText.setText("密码错误");
+                                break;
+                        }
+                    });
+                }
+            }
         });
     }
 
@@ -223,6 +279,7 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
         dataBinding.registerConfirmPassword.setText("");
         dataBinding.noteText.setText("请输入相关信息");
         dataBinding.registerSecond.setText("注册");
+        dataBinding.loginNoteText.setText("请输入相关信息");
     }
     @Override
     public void onClick(View v) {
@@ -272,12 +329,11 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
                         dataBinding.noteText.setText("请输入正确的邮箱格式");
 //                    Toast.makeText(this,"请输入正确的邮箱格式",Toast.LENGTH_SHORT).show();
                     }else {
-                        checkPassword();
+                        checkRegisterPassword();
                     }
                 }else if(dataBinding.registerSecond.getText().toString().equals("注册中")){
                     Toast.makeText(this,"正在为您注册，请勿重复点击",Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case R.id.login_back: //如果点击了返回的按钮
                 if(level==Level.Login){
@@ -296,10 +352,27 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
                     clearMessage();
                 }
                 break;
+            case R.id.Login_second://第二个登录按钮
+                loginEmail = dataBinding.loginEditEmail.getText().toString();
+                if(isEmail(loginEmail)){
+                    dataBinding.loginNoteText.setText("请输入正确的邮箱格式");
+                }else {
+                    checkLoginPassword();
+                }
         }
     }
 
-    private void checkPassword(){
+    private void checkLoginPassword(){
+        loginPassword = dataBinding.loginEditPassword.getText().toString();
+        if(loginPassword.isEmpty()){
+            dataBinding.loginNoteText.setText("请输入密码");
+        }else {
+            dataBinding.loginNoteText.setText("正在登录...");
+            LoginReal();
+        }
+    }
+
+    private void checkRegisterPassword(){
         register_password = dataBinding.registerEditPassword.getText().toString();
         register_confirm_password = dataBinding.registerConfirmPassword.getText().toString();
         if(register_password.length()<=6||register_confirm_password.length()<=6){
@@ -327,9 +400,19 @@ public class MainLoginActivity extends AppCompatActivity implements View.OnClick
         new Thread(()-> viewModel.RegisterCheckEmail(register_email)).start();
     }
 
+    private void LoginReal(){
+        new Thread(()->{
+            HttpMainBean checkRegisterBean = viewModel.LoginReal(loginEmail,loginPassword);
+            //检测密码是否能加密
+            if(!checkRegisterBean.isStatus()){
+                runOnUiThread(()-> dataBinding.loginNoteText.setText(checkRegisterBean.getMessage()));
+            }
+        }).start();
+    }
+
     private void registerReal(){
         new Thread(()->{
-            HttpCheckRegisterBean checkRegisterBean = viewModel.RegisterReal(register_email,register_password);
+            HttpMainBean checkRegisterBean = viewModel.RegisterReal(register_email,register_password);
             //检测密码是否能加密
             if(!checkRegisterBean.isStatus()){
                 runOnUiThread(()-> dataBinding.noteText.setText(checkRegisterBean.getMessage()));

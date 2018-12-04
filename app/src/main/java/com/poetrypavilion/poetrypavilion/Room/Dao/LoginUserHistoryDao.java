@@ -17,6 +17,9 @@ public interface LoginUserHistoryDao {
     @Query("SELECT user_email FROM loginhistory WHERE is_login is 1")
     String[] getCurrentLoginUserEmail();
 
+    @Query("SELECT user_name FROM loginhistory WHERE is_login is 1")
+    String[] getCurrentLoginUserName();
+
     @Update
     void updateUserLoginHistory(LoginUserHistory history);
 

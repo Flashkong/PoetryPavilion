@@ -6,7 +6,10 @@
     <color name="colorTheme">#229954</color>
     <color name="white">#FFF</color>
     <color name="colorThemeLight">#85DA9A</color>
+    <color name="colorThemeLittleDark">#4bb766</color>
     <color name="colorGrey">#f0f0f0</color>
+    <color name="colorDarkGrey">#dfdfdf</color>
+    <color name="colorLittleWhite">#f0f0f0</color>
     <color name="red">#f40d0d</color>
     <color name="gray">#f2f1f1</color>
     <color name="black_gray">#4b4848</color>
