@@ -78,7 +78,13 @@ public class PoemViewModel extends ViewModel {
                         if(aCache.getAsObject("poems_0_20")!=null){
                             aCache.remove("poems_0_20");
                         }
-                        aCache.put("poems_0_20",(ArrayList)temp);
+                        //判断数据量，如果大于20条，那么取出20条，如果小于20条，取出全部
+                        if(temp.size() >=20){
+                            ArrayList<PoemDetail> t = new ArrayList<PoemDetail>(temp.subList(0,20));
+                            aCache.put("poems_0_20", t);
+                        }else {
+                            aCache.put("poems_0_20",(ArrayList)temp);
+                        }
                         //不需要在这里更新我的当前页数
 
                         // 判断数目，如果是最后一个请求到了，就题型前端加载数据
