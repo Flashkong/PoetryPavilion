@@ -1,30 +1,42 @@
 package com.poetrypavilion.poetrypavilion.Adapters;
 
+import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alexvasilkov.android.commons.adapters.ItemsAdapter;
-import com.alexvasilkov.android.commons.ui.Views;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.FileAndBitmapAndBytes;
+import com.zzhoujay.richtext.RichText;
 
 
+import org.w3c.dom.Text;
+
+import java.io.File;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import jp.wasabeef.richeditor.RichEditor;
 
 
 //PaintingAdapter其实不是Painting的adapter，而是大概的那个滑动的listview的adapter
-public class PaintingsAdapter extends RecyclerView.Adapter<PaintingsAdapter.ViewHolder>
-        implements View.OnClickListener {
+public class PoemShowAdapter extends RecyclerView.Adapter<PoemShowAdapter.ViewHolder>
+        implements View.OnClickListener{
 
     private XXListener mXXListener;
     private List<PoemDetail> poemDetailList;
 
-    public PaintingsAdapter(List<PoemDetail> poemDetails) {
+    public PoemShowAdapter(List<PoemDetail> poemDetails) {
         this.poemDetailList=poemDetails;
     }
 
@@ -54,9 +66,14 @@ public class PaintingsAdapter extends RecyclerView.Adapter<PaintingsAdapter.View
 
     private void setListViewContent(ViewHolder holder,PoemDetail item){
         //设置诗歌的内容
-        holder.poem_text.setText(item.getPoetry());
+        RichText.fromHtml(item.getPoetry()).into(holder.poem_text);
         //设置头像
-
+        if(item.getUserLocalLink()!=null){
+            File file = new File(item.getUserLocalLink());
+            holder.poem_board_concision_userhead_img.setImageBitmap(FileAndBitmapAndBytes.FileToBitMap(file));
+        }else {
+            holder.poem_board_concision_userhead_img.setImageResource(R.drawable.default_user_head_img);
+        }
         //设置用户名
         holder.poem_board_concision_username.setText(item.getEditor());
         //设置诗歌的发表时间
@@ -99,14 +116,17 @@ public class PaintingsAdapter extends RecyclerView.Adapter<PaintingsAdapter.View
         final TextView poem_board_concision_username;
         final TextView poem_board_concision_user_uplode_time;
         final TextView poem_board_poem_title;
+        final CircleImageView poem_board_concision_userhead_img;
 
         ViewHolder(View view) {
             super(view);
             poem_text = view.findViewById( R.id.poem_board_concision_poem);
+//            poem_text.setInputEnabled(false);
             layout =view.findViewById( R.id.poem_board_concision_linear_layout);
             poem_board_concision_username = view.findViewById(R.id.poem_board_concision_username);
             poem_board_concision_user_uplode_time = view.findViewById(R.id.poem_board_concision_user_uplode_time);
             poem_board_poem_title =view.findViewById(R.id.poem_board_concision_poem_title);
+            poem_board_concision_userhead_img = view.findViewById(R.id.poem_board_concision_userhead_img);
         }
     }
 }

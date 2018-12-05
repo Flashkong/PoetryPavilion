@@ -9,6 +9,7 @@ import com.poetrypavilion.poetrypavilion.Http.RequestInterFaces.RequestInterface
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -24,10 +25,30 @@ public class PoemRetrofit extends BaseRetrofit{
     //定义发送请求后收到请求的监听器
     public interface ResponseListener {
         void onReponseBack(List<HttpGetPoemBean> httpGetPoemBeans);
+        void onUserHeaderImgBack(ResponseBody responseBody,String url);
     }
 
     public void setOnResponseBackListener(ResponseListener ResponseListener) {
         this.mResponseListener = ResponseListener;
+    }
+
+    public void getUserHeadImg(String url){
+        Call<ResponseBody> call = requestInterface.getUserHeadImg(url);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                new Thread(
+                        ()->mResponseListener.onUserHeaderImgBack(response.body(),response.raw().request().url().toString())
+                ).start();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                new Thread(
+                        ()->mResponseListener.onUserHeaderImgBack(null,"")
+                ).start();
+            }
+        });
     }
 
     public void getPoems(int fresh_times){

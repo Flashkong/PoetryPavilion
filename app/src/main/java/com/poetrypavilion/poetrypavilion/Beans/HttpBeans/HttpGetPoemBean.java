@@ -1,7 +1,18 @@
 package com.poetrypavilion.poetrypavilion.Beans.HttpBeans;
 
 public class HttpGetPoemBean {
+    //诗人头像连接
+    private String user_avatar;
     //诗歌的题目
+
+    public String getUser_avatar() {
+        return user_avatar;
+    }
+
+    public void setUser_avatar(String user_avatar) {
+        this.user_avatar = user_avatar;
+    }
+
     private String Title;
     //诗歌的注释
     private String Note;

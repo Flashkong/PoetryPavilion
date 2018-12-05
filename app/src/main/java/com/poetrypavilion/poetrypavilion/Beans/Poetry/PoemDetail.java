@@ -3,8 +3,20 @@ package com.poetrypavilion.poetrypavilion.Beans.Poetry;
 import java.io.Serializable;
 
 public class PoemDetail implements Serializable {
-    //用户的头像
-    private String UserImgSrc;
+    //用户的头像的网络地址
+    private String UserImgSrcLink;
+    //用户头像的本地缓存地址，到时候就根据这个判断是默认的还是加载用户自己的头像
+    //另外还需要判断文件是不是被删除了，如果删除了的话，也需要加载默认的头像
+    private String UserLocalLink;
+    public String getUserLocalLink() {
+        return UserLocalLink;
+    }
+
+    public void setUserLocalLink(String userLocalLink) {
+        UserLocalLink = userLocalLink;
+    }
+
+
     //诗歌的题目
     private String Title;
     //诗歌的注释
@@ -22,12 +34,12 @@ public class PoemDetail implements Serializable {
     //诗歌的喜欢总数
     private int LikeTotal;
 
-    public String getUserImgSrc() {
-        return UserImgSrc;
+    public String getUserImgSrcLink() {
+        return UserImgSrcLink;
     }
 
-    public void setUserImgSrc(String userImgSrc) {
-        UserImgSrc = userImgSrc;
+    public void setUserImgSrcLink(String userImgSrcLink) {
+        UserImgSrcLink = userImgSrcLink;
     }
 
     public String getTitle() {

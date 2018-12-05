@@ -1,6 +1,7 @@
 package com.poetrypavilion.poetrypavilion.Utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,5 +82,12 @@ public class FileAndBitmapAndBytes {
             e.printStackTrace();
         }
         return file;
+    }
+
+    public static Bitmap FileToBitMap(File file){
+        byte[] filebyte = fileToBytes(file);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(filebyte, 0,
+                filebyte.length);
+        return bitmap;
     }
 }

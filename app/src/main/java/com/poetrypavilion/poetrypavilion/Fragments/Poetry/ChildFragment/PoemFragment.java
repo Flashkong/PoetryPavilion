@@ -2,6 +2,7 @@ package com.poetrypavilion.poetrypavilion.Fragments.Poetry.ChildFragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,14 +13,16 @@ import android.widget.Toast;
 import com.alexvasilkov.foldablelayout.UnfoldableView;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.poetrypavilion.poetrypavilion.Acache.ACache;
-import com.poetrypavilion.poetrypavilion.Adapters.PaintingsAdapter;
+import com.poetrypavilion.poetrypavilion.Adapters.PoemShowAdapter;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
 import com.poetrypavilion.poetrypavilion.Fragments.BaseFragment;
 import com.poetrypavilion.poetrypavilion.Items.SpacesItemDecoration;
 import com.poetrypavilion.poetrypavilion.R;
+import com.poetrypavilion.poetrypavilion.Utils.FileAndBitmapAndBytes;
 import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
 import com.poetrypavilion.poetrypavilion.databinding.PoemFragmentBinding;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
@@ -97,29 +100,26 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
     }
 
     public void openDetails(View coverView, PoemDetail item) {
+        //设置头像
+        if(item.getUserLocalLink()!=null){
+            File file = new File(item.getUserLocalLink());
+            bindingView.poemInclude.poemBoardDetailUserheadImg.setImageBitmap(FileAndBitmapAndBytes.FileToBitMap(file));
+        }else {
+            bindingView.poemInclude.poemBoardDetailUserheadImg.setImageResource(R.drawable.default_user_head_img);
+        }
         bindingView.poemInclude.poemBoardDetailUsername.setText(item.getEditor());
         bindingView.poemInclude.poemBoardDetailUserUplodeTime.setText(item.getDynasty());
         bindingView.poemInclude.detailsTitle.setText(item.getTitle());
-        bindingView.poemInclude.detailsPoemText.setText(item.getPoetry());
-        bindingView.poemInclude.detailsPoemNote.setText(item.getNote());
-        bindingView.poemInclude.detailsPoemTranslate.setText(item.getTranslate());
-//        RichText.from(item.getTranslate()).into(bindingView.poemInclude.detailsPoemTranslate);
-        bindingView.poemInclude.detailsPoemShangxi.setText(item.getShangxi());
+        bindingView.poemInclude.detailsPoemText.setHtml(item.getPoetry());
+        bindingView.poemInclude.detailsPoemText.setInputEnabled(false);
+        if(item.getNote()!=null)
+            bindingView.poemInclude.detailsPoemNote.setText(item.getNote());
+        if(item.getTranslate()!=null)
+            bindingView.poemInclude.detailsPoemTranslate.setText(item.getTranslate());
+        if(item.getShangxi()!=null)
+            bindingView.poemInclude.detailsPoemShangxi.setText(item.getShangxi());
         bindingView.poemInclude.poemDetailUnfoldableview.unfold(
                 coverView, bindingView.poemInclude.poemBoardDetailLayout);
-
-        /*
-        这里当时是设置具体的图片内容的地方，里面包含了描述的格式
-        SpannableBuilder builder = new SpannableBuilder(PoemView.getContext());
-        builder.createStyle().setFont(Typeface.DEFAULT_BOLD).apply()
-                .append(R.string.year).append(": ")
-                .clearStyle()
-                .append(painting.getYear()).append("\n")
-                .createStyle().setFont(Typeface.DEFAULT_BOLD).apply()
-                .append(R.string.location).append(": ")
-                .clearStyle()
-                .append(painting.getLocation());
-        description.setText(builder.build());*/
     }
 
     @Override
@@ -129,10 +129,10 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
         poemViewModel = ViewModelProviders.of(this).get(PoemViewModel.class);
 
         poemViewModel.getPoemDetails().observe(this ,poemDetails->{
-            PaintingsAdapter adapter = new PaintingsAdapter(poemDetails);
+            PoemShowAdapter adapter = new PoemShowAdapter(poemDetails);
             bindingView.poemInclude.poemBoardsRecyclerView.setAdapter(adapter);
 
-            adapter.setOnXXClickListener(new PaintingsAdapter.XXListener(){
+            adapter.setOnXXClickListener(new PoemShowAdapter.XXListener(){
                 @Override
                 public void onXXClick(View view, PoemDetail item) {
                     openDetails(view,item);
@@ -197,20 +197,23 @@ public class PoemFragment extends BaseFragment<PoemFragmentBinding>
             try{
                 poemViewModel.setOnLoadFromHttpListener(new PoemViewModel.LoadFromHttpListener() {
                     @Override
-                    public void onLoadOk(boolean IsOldPoemListNull,List<PoemDetail> list) {
+                    public void onLoadOk(boolean IsOldPoemListNull,List<PoemDetail> list,boolean isNeedLoadData) {
                         //创建新线程取消刷新的UI,由于数据加载过快，导致刷新动画刚显示即刷新成功，所以这里延迟1s关闭刷新动画
                         int delay_time;
                         if(!IsOldPoemListNull){
-                            delay_time = 1000;
+                            //我设置1000ms是为了让加载动画的时候可以看到刷新动画，不然加载过快，动画显示不出来
+//                            delay_time = 1000;
+                            delay_time = 0;
                         }else {
-                            delay_time=400;
+//                            delay_time=400;
+                            delay_time=0;
                         }
                         Objects.requireNonNull(getActivity()).runOnUiThread(()->{
                             //关闭加载的动画，可能会重复关闭，但是无妨
                             bindingView.poemLoad.setVisibility(View.GONE);
                             new Handler().postDelayed(() -> {
                                 bindingView.poemInclude.poemBoardRefresh.setRefreshing(false);
-                                if(!IsOldPoemListNull){
+                                if(!isNeedLoadData){
                                     //如果刷新前就有数据
                                     poemViewModel.getPoemDetails().setValue(poemViewModel.getPoemDetails().getValue());
                                 }else {

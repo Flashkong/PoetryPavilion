@@ -4,6 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
+import okhttp3.OkHttpClient;
+
 
 public class MyApplication extends Application {
     @SuppressLint("StaticFieldLeak")
@@ -15,10 +20,10 @@ public class MyApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         fileDir = getFilesDir().getPath();
-//        Stetho.initializeWithDefaults(this);
-//        new OkHttpClient.Builder()
-//                .addNetworkInterceptor(new StethoInterceptor())
-//                .build();
+        Stetho.initializeWithDefaults(this);
+        new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
     }
 
     public static Context getContext(){

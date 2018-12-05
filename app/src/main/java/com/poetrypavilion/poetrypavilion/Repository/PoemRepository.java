@@ -3,10 +3,16 @@ package com.poetrypavilion.poetrypavilion.Repository;
 import com.poetrypavilion.poetrypavilion.Acache.ACache;
 import com.poetrypavilion.poetrypavilion.Beans.HttpBeans.HttpGetPoemBean;
 import com.poetrypavilion.poetrypavilion.Beans.Poetry.PoemDetail;
+import com.poetrypavilion.poetrypavilion.Http.HttpConfig;
 import com.poetrypavilion.poetrypavilion.MyRetrofit.PoemRetrofit;
 import com.poetrypavilion.poetrypavilion.ViewModels.Poetry.PoemViewModel;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
+
+import okhttp3.ResponseBody;
 
 /**
  * @message 在这里做数据的处理，包括model，cache，和request
@@ -43,14 +49,34 @@ public class PoemRepository{
                 //调用另一个监听器
                 mResponseListener.onHttpReponseBack(httpGetPoemBeans);
             }
+
+            @Override
+            public void onUserHeaderImgBack(ResponseBody responseBody,String url) {
+                if(url.equals("")){
+                    mResponseListener.onGetUserHeaderImgBack(responseBody,"");
+                }else {
+                    int i = HttpConfig.getIPAddress().length()+"getAvatar?user_avatar=".length();
+                    String s = url.substring(i);
+                    try {
+                        mResponseListener.onGetUserHeaderImgBack(responseBody,URLDecoder.decode( s, "UTF-8" ));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         });
         poemRetrofit.getPoems(fresh_times);
+    }
+
+    public void getUserHeaderImg(String link){
+        poemRetrofit.getUserHeadImg(link);
     }
 
     //定义发送请求后收到请求的监听器
     public interface ResponseListener {
         void onHttpReponseBack(List<HttpGetPoemBean> httpGetPoemBeans);
         void onAcacheResponseBack(List<PoemDetail> poemDetails);
+        void onGetUserHeaderImgBack(ResponseBody responseBody,String url);
     }
 
     public void setOnResponseBackListener(ResponseListener ResponseListener) {
